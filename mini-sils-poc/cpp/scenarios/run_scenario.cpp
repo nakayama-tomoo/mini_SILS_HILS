@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cstring>
 
 #include "fan_control.hpp"
 
@@ -43,20 +44,21 @@ FanState fromString(const std::string& value)
     return FanState::OFF;
 }
 
-int runScenario(const std::string& scenarioName)
+int runScenario(const fs::path& scenarioPath)
 {
-    std::string inputPath =
-        "scenarios/fan_control/" + scenarioName + ".csv";
-
-    std::ifstream input(inputPath);
+    std::ifstream input(scenarioPath);
 
     if (!input.is_open()) {
-        std::cerr << "Failed to open: " << inputPath << std::endl;
+        std::cerr << "Failed to open: " << scenarioPath << std::endl;
         return 1;
     }
 
-    std::string outputPath =
-        "cpp/results/" + scenarioName + "_cpp_results.csv";
+
+    std::string scenarioName =
+        scenarioPath.stem().string();
+
+    fs::path outputPath =
+        fs::path("results") / (scenarioName + "_cpp_results.csv");
 
     std::ofstream output(outputPath);
 
@@ -99,40 +101,36 @@ int runScenario(const std::string& scenarioName)
     }
 
     std::cout << "Completed: " << scenarioName << std::endl;
+    std::cout << "Output   : " << outputPath << std::endl;
 
     return 0;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    fs::path scenarioDir = "scenarios/fan_control";
+    if (argc < 3) {
+        std::cerr
+            << "Usage: "
+            << argv[0]
+            << " --scenario <scenario.csv>"
+            << std::endl;
 
-    std::vector<std::string> scenarioNames;
-
-    for (const auto& entry : fs::directory_iterator(scenarioDir)) {
-        if (!entry.is_regular_file()) {
-            continue;
-        }
-
-        if (entry.path().extension() != ".csv") {
-            continue;
-        }
-
-        scenarioNames.push_back(
-            entry.path().stem().string()
-        );
+        return 1;
     }
 
-    std::sort(
-        scenarioNames.begin(),
-        scenarioNames.end()
-    );
+    std::string option = argv[1];
 
-    int overallResult = 0;
+    if (option != "--scenario") {
+        std::cerr
+            << "Unknown option: "
+            << option
+            << std::endl;
 
-    for (const auto& scenarioName : scenarioNames) {
-        overallResult |= runScenario(scenarioName);
+        return 1;
     }
 
-    return overallResult;
+    fs::path scenarioPath = argv[2];
+
+    return runScenario(scenarioPath);
 }
+

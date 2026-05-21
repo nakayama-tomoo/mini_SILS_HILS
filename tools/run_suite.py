@@ -48,15 +48,40 @@ def main():
                str(scenario_path),
             ]
 
+            cpp_command = [
+                "./build/run_scenario",
+                "--scenario",
+                str(scenario_path),
+            ]
+
             print(" command     :", " ".join(command))
+
+            print(
+                " cpp command :",
+                " ".join(cpp_command),
+            )
 
             result = subprocess.run(command)
 
             print(" returncode  :", result.returncode)
 
+            cpp_result = subprocess.run(
+                cpp_command,
+                cwd=BASE_DIR / "mini-sils-poc" / "cpp",
+            )
+
+            print(
+                " cpp returncode :",
+                cpp_result.returncode,
+            )
+
             total_scenarios += 1
 
-            if result.returncode == 0:
+            if (
+                result.returncode == 0
+                and
+                cpp_result.returncode == 0
+            ):
                 passed_scenarios += 1
             else:
                 failed_scenarios += 1
