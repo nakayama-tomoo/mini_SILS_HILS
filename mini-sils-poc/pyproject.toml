@@ -7,7 +7,9 @@ name = "mini-sils-poc"
 version = "0.1.0"
 description = "A personal mini SILS PoC using fictional electric radiator fan control scenarios"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+    "PyYAML>=6.0",
+]
 
 [project.optional-dependencies]
 dev = [
