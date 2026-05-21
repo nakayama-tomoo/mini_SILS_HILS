@@ -1,4 +1,5 @@
 from pathlib import Path
+import argparse
 import sys
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -7,12 +8,25 @@ sys.path.insert(0, str(REPO_ROOT / "src"))
 from mini_sils.result_writer import write_csv, write_json
 from mini_sils.scenario_runner import run_fan_control_scenario
 
-
 def main() -> None:
-    scenario_dir = REPO_ROOT / "scenarios" / "fan_control"
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--scenario",
+        type=str,
+        help="Single scenario CSV path",
+    )
+
+    args = parser.parse_args()
+
     output_dir = REPO_ROOT / "results" / "fan_control"
 
-    scenario_files = sorted(scenario_dir.glob("*.csv"))
+    if args.scenario:
+        scenario_files = [Path(args.scenario)]
+    else:
+        scenario_dir = REPO_ROOT / "scenarios" / "fan_control"
+        scenario_files = sorted(scenario_dir.glob("*.csv"))
+
 
     if not scenario_files:
         raise FileNotFoundError(f"No scenario CSV files found: {scenario_dir}")

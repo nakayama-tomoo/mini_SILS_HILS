@@ -1,0 +1,7 @@
+{
+  "suite": "fan_control_suite",
+  "total_scenarios": 4,
+  "passed_scenarios": 4,
+  "failed_scenarios": 0,
+  "overall": "PASS"
+}

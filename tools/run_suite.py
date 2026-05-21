@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 import subprocess
 import yaml
 
@@ -14,6 +15,9 @@ SCENARIO_SUITE_PATH = (
 
 
 def main():
+    total_scenarios = 0
+    passed_scenarios = 0
+    failed_scenarios = 0
     with open(SCENARIO_SUITE_PATH, "r", encoding="utf-8") as f:
         suite = yaml.safe_load(f)
 
@@ -38,8 +42,10 @@ def main():
             print(" status      : FOUND")
 
             command = [
-                "python",
-                "mini-sils-poc/scripts/run_fan_control_sils.py",
+               "python",
+               "mini-sils-poc/scripts/run_fan_control_sils.py",
+               "--scenario",
+               str(scenario_path),
             ]
 
             print(" command     :", " ".join(command))
@@ -48,10 +54,49 @@ def main():
 
             print(" returncode  :", result.returncode)
 
+            total_scenarios += 1
+
+            if result.returncode == 0:
+                passed_scenarios += 1
+            else:
+                failed_scenarios += 1
+
         else:
             print(" status      : NOT FOUND")
 
         print()
+
+
+    overall = "PASS"
+
+    if failed_scenarios > 0:
+        overall = "FAIL"
+
+    summary = {
+        "suite": suite["suite_name"],
+        "total_scenarios": total_scenarios,
+        "passed_scenarios": passed_scenarios,
+        "failed_scenarios": failed_scenarios,
+        "overall": overall,
+    }
+
+    summary_path = (
+        BASE_DIR
+        / "results"
+        / "suite_summary.json"
+    )
+
+    with open(summary_path, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+
+    print("=" * 60)
+    print("Suite Summary")
+    print("=" * 60)
+
+    print(json.dumps(summary, indent=2))
+
+    print()
+    print(" summary     :", summary_path)
 
 
 if __name__ == "__main__":
