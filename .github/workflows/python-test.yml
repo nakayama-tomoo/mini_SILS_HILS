@@ -26,14 +26,14 @@ jobs:
 
       - name: Install Python dependencies
         run: |
+          cd mini-sils-poc
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev]"
 
       - name: Run pytest
-        run: python -m pytest
-
-      - name: Run suite orchestration
-        run: python tools/run_suite.py
+        run: |
+          cd mini-sils-poc
+          python -m pytest
 
       - name: Install CMake and compiler tools
         run: |
@@ -44,15 +44,18 @@ jobs:
             libgtest-dev
 
       - name: Configure CMake
-        run: cmake -S cpp -B cpp/build
+        run: cmake -S mini-sils-poc/cpp -B mini-sils-poc/cpp/build
 
       - name: Build C++ targets
-        run: cmake --build cpp/build
+        run: cmake --build mini-sils-poc/cpp/build
 
       - name: Run CTest
         run: |
-          cd cpp/build
+          cd mini-sils-poc/cpp/build
           ctest --output-on-failure
+
+      - name: Run suite orchestration
+        run: python tools/run_suite.py
 
       - name: Compare Python and C++ results
         run: python tools/compare_python_cpp_results.py
@@ -61,18 +64,18 @@ jobs:
         run: |
           docker build \
             -t mini-sils-poc \
-            -f docker/Dockerfile \
-            .
+            -f mini-sils-poc/docker/Dockerfile \
+            mini-sils-poc
 
-      - name: Docker run
-        run: |
-          docker run --rm mini-sils-poc
+#      - name: Docker run
+#        run: |
+#          docker run --rm mini-sils-poc
 
       - name: Upload Python SILS result CSV
         uses: actions/upload-artifact@v7
         with:
           name: python-fan-control-results
-          path: results/fan_control/*.csv
+          path: mini-sils-poc/results/fan_control/*.csv
           if-no-files-found: error
           retention-days: 14
 
@@ -80,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: cpp-fan-control-results
-          path: cpp/results/*.csv
+          path: mini-sils-poc/cpp/results/*.csv
           if-no-files-found: error
           retention-days: 14
 
