@@ -1,0 +1,50 @@
+suite_name: fan_control_suite
+
+description: >
+  Shared scenario suite for:
+  - Python SILS(Software-in-the-Loop Simulation)
+  - C++ SILS(Software-in-the-Loop Simulation)
+  - mini HILS(Hardware-in-the-Loop Simulation)
+
+owner: Mini_SILS_HILS_Construction
+
+scenarios:
+  - id: SC_01
+    description: traffic warmup cooldown
+    category: normal
+    file: fan_control/sc_01_traffic_warmup_cooldown.csv
+
+    targets:
+      - python_sils
+      - cpp_sils
+      - mini_hils
+
+  - id: SC_02
+    description: around 95deg fluctuation
+    category: boundary
+    file: fan_control/sc_02_around_95deg_fluctuation.csv
+
+    targets:
+      - python_sils
+      - cpp_sils
+      - mini_hils
+
+  - id: SC_03
+    description: rapid heatup recovery
+    category: stress
+    file: fan_control/sc_03_rapid_heatup_recovery.csv
+
+    targets:
+      - python_sils
+      - cpp_sils
+      - mini_hils
+
+  - id: SC_04
+    description: high temperature oscillation
+    category: oscillation
+    file: fan_control/sc_04_high_temp_oscillation.csv
+
+    targets:
+      - python_sils
+      - cpp_sils
+      - mini_hils
