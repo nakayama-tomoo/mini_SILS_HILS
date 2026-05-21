@@ -1,0 +1,6 @@
+time_s,coolant_temp_c,expected_fan_state
+0,94,OFF
+10,95,LOW
+20,94,LOW
+30,91,LOW
+40,90,OFF

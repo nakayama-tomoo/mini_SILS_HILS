@@ -1,0 +1,13 @@
+.git
+.venv
+.pytest_cache
+
+cpp/build
+cpp/main
+cpp/test_fan_control
+
+results
+cpp/results/*.csv
+
+__pycache__
+*.pyc

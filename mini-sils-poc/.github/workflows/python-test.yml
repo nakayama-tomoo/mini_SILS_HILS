@@ -1,0 +1,88 @@
+name: Python and C++ mini SILS CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.9"
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run pytest
+        run: python -m pytest
+
+      - name: Run Python mini SILS
+        run: python scripts/run_fan_control_sils.py
+
+      - name: Install CMake and compiler tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            cmake \
+            g++ \
+            libgtest-dev
+
+      - name: Configure CMake
+        run: cmake -S cpp -B cpp/build
+
+      - name: Build C++ targets
+        run: cmake --build cpp/build
+
+      - name: Run CTest
+        run: |
+          cd cpp/build
+          ctest --output-on-failure
+
+      - name: Run C++ scenario
+        run: ./cpp/build/run_scenario
+
+      - name: Compare Python and C++ results
+        run: python tools/compare_results.py
+
+      - name: Docker build
+        run: |
+          docker build \
+            -t mini-sils-poc \
+            -f docker/Dockerfile \
+            .
+
+      - name: Docker run
+        run: |
+          docker run --rm mini-sils-poc
+
+      - name: Upload Python SILS result CSV
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-fan-control-results
+          path: results/fan_control/*.csv
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload C++ SILS result CSV
+        uses: actions/upload-artifact@v7
+        with:
+          name: cpp-fan-control-results
+          path: cpp/results/*.csv
+          if-no-files-found: error
+          retention-days: 14

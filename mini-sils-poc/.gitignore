@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environment
+.venv/
+venv/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Result outputs
+results/**/*.csv
+results/**/*.json
+!results/.gitkeep
+
+# Local/private documents
+*.pptx
+*.xlsx
+*.docx
+*.pdf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# C++ build outputs
+cpp/main
+cpp/test_fan_control
+
+# CMake build outputs
+cpp/build/
+
+# C++ scenario results
+cpp/results/*.csv
+!cpp/results/.gitkeep
