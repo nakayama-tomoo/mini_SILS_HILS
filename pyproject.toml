@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mini-sils-hils-platform"
+version = "0.1.0"
+description = "Scenario-driven mini SILS and mini HILS verification platform PoC"
+requires-python = ">=3.9"
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0,<9.0.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["implementations/python_sils/src"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "implementations/python_sils/tests"
+]
+
+pythonpath = [
+    "implementations/python_sils/src"
+]

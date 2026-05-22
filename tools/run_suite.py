@@ -43,7 +43,7 @@ def main():
 
             command = [
                "python",
-               "mini-sils-poc/scripts/run_fan_control_sils.py",
+               "implementations/python_sils/scripts/run_fan_control_sils.py",
                "--scenario",
                str(scenario_path),
             ]
@@ -67,7 +67,7 @@ def main():
 
             cpp_result = subprocess.run(
                 cpp_command,
-                cwd=BASE_DIR / "mini-sils-poc" / "cpp",
+                cwd=BASE_DIR / "implementations" / "python_sils" / "cpp",
             )
 
             print(

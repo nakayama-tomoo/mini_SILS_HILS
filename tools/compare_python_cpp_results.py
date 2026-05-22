@@ -7,14 +7,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 PYTHON_RESULTS_DIR = (
     BASE_DIR
-    / "mini-sils-poc"
+    / "implementations"
+    / "python_sils"
     / "results"
     / "fan_control"
 )
 
 CPP_RESULTS_DIR = (
     BASE_DIR
-    / "mini-sils-poc"
+    / "implementations"
+    / "python_sils"
     / "cpp"
     / "results"
 )
