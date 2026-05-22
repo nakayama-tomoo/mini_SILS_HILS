@@ -38,7 +38,7 @@ def decide_fan_state(
     if prev_fan_state == FanState.LOW:
         if coolant_temp_c <= off_c:
             return FanState.OFF
-        if coolant_temp_c <= high_off_c:
+        if coolant_temp_c < high_on_c:
             return FanState.LOW
         return FanState.HIGH
 
