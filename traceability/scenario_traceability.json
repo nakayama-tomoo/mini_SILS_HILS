@@ -1,0 +1,81 @@
+{
+  "schema_version": "0.1.0",
+
+  "description":
+    "Traceability mapping between requirements and scenarios.",
+
+  "scenarios": [
+
+    {
+      "scenario_id": "SC-01",
+
+      "name":
+        "traffic_warmup_cooldown",
+
+      "purpose":
+        "Normal warmup and cooldown behavior.",
+
+      "requirement_ids": [
+        "REQ-FAN-001"
+      ]
+    },
+
+    {
+      "scenario_id": "SC-02",
+
+      "name":
+        "around_95deg_fluctuation",
+
+      "purpose":
+        "Threshold and hysteresis behavior around 95C.",
+
+      "requirement_ids": [
+        "REQ-FAN-001"
+      ]
+    },
+
+    {
+      "scenario_id": "SC-03",
+
+      "name":
+        "rapid_heatup_recovery",
+
+      "purpose":
+        "Rapid heatup and recovery behavior.",
+
+      "requirement_ids": [
+        "REQ-FAN-002"
+      ]
+    },
+
+    {
+      "scenario_id": "SC-04",
+
+      "name":
+        "high_temp_oscillation",
+
+      "purpose":
+        "Hysteresis stability behavior.",
+
+      "requirement_ids": [
+        "REQ-FAN-002",
+        "REQ-FAN-003"
+      ]
+    },
+
+    {
+      "scenario_id": "SC-05",
+
+      "name":
+        "v2_threshold_validation",
+
+      "purpose":
+         "Version 2 threshold validation scenario.",
+
+      "requirement_ids": [
+        "REQ-FAN-001",
+        "REQ-FAN-002"
+      ]
+    }
+  ]
+}

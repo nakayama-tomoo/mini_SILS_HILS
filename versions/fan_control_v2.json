@@ -1,0 +1,26 @@
+{
+  "version_id": "fan_control_v2",
+
+  "description":
+    "Updated hysteresis thresholds for improved cooling response.",
+
+  "thresholds": {
+    "low_on_c": 94,
+    "off_c": 89,
+    "high_on_c": 104,
+    "high_off_c": 99
+  },
+
+  "compatible_scenarios": [
+    "SC-01",
+    "SC-02",
+    "SC-03",
+    "SC-04"
+  ],
+
+  "previous_version":
+    "fan_control_v1",
+
+  "status":
+    "candidate"
+}

@@ -1,0 +1,22 @@
+{
+  "environment_id": "CPP_SILS",
+
+  "type": "SILS",
+
+  "implementation": "cpp_sils",
+
+  "execution_model": {
+    "logical_time": true,
+    "realtime": false
+  },
+
+  "interfaces": {
+    "input": "CSV",
+    "output": "JSON"
+  },
+
+  "platform": {
+    "language": "C++",
+    "runtime": "native"
+  }
+}

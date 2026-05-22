@@ -1,0 +1,87 @@
+{
+  "schema_version": "0.1.0",
+  "overall": "PASS",
+  "evidence": [
+    {
+      "scenario_id": "SC-01",
+      "version_id": "fan_control_v1",
+      "requirement_ids": [
+        "REQ-FAN-001"
+      ],
+      "comparison": "MATCH",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "hils_result": "PASS",
+      "implementations": [
+        "python_sils",
+        "cpp_sils"
+      ],
+      "environments": [
+        "PYTHON_SILS",
+        "CPP_SILS",
+        "ARDUINO_HILS"
+      ]
+    },
+    {
+      "scenario_id": "SC-02",
+      "version_id": "fan_control_v1",
+      "requirement_ids": [
+        "REQ-FAN-001"
+      ],
+      "comparison": "MATCH",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "hils_result": "PASS",
+      "implementations": [
+        "python_sils",
+        "cpp_sils"
+      ],
+      "environments": [
+        "PYTHON_SILS",
+        "CPP_SILS",
+        "ARDUINO_HILS"
+      ]
+    },
+    {
+      "scenario_id": "SC-03",
+      "version_id": "fan_control_v1",
+      "requirement_ids": [
+        "REQ-FAN-002"
+      ],
+      "comparison": "MATCH",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "hils_result": "PASS",
+      "implementations": [
+        "python_sils",
+        "cpp_sils"
+      ],
+      "environments": [
+        "PYTHON_SILS",
+        "CPP_SILS",
+        "ARDUINO_HILS"
+      ]
+    },
+    {
+      "scenario_id": "SC-04",
+      "version_id": "fan_control_v1",
+      "requirement_ids": [
+        "REQ-FAN-002",
+        "REQ-FAN-003"
+      ],
+      "comparison": "MATCH",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "hils_result": "PASS",
+      "implementations": [
+        "python_sils",
+        "cpp_sils"
+      ],
+      "environments": [
+        "PYTHON_SILS",
+        "CPP_SILS",
+        "ARDUINO_HILS"
+      ]
+    }
+  ]
+}

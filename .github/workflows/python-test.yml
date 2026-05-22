@@ -60,6 +60,9 @@ jobs:
       - name: Compare Python and C++ results
         run: python tools/compare_python_cpp_results.py
 
+      - name: Run governance checks
+        run: python tools/run_governance_checks.py
+
       - name: Docker build
         run: |
           docker build \

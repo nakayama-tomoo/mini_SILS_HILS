@@ -17,6 +17,7 @@ class ScenarioResult:
 def run_fan_control_scenario(
     scenario_path: Path,
     initial_state: FanState = FanState.OFF,
+    version_id: str = "fan_control_v1",
 ) -> list[ScenarioResult]:
     results: list[ScenarioResult] = []
     prev_fan_state = initial_state
@@ -32,6 +33,7 @@ def run_fan_control_scenario(
             actual_fan_state = decide_fan_state(
                 prev_fan_state=prev_fan_state,
                 coolant_temp_c=coolant_temp_c,
+                version_id=version_id,
             )
 
             match = "PASS" if actual_fan_state == expected_fan_state else "FAIL"

@@ -1,0 +1,22 @@
+{
+  "environment_id": "ARDUINO_HILS",
+
+  "type": "HILS",
+
+  "implementation": "arduino_hils",
+
+  "execution_model": {
+    "logical_time": false,
+    "realtime": true
+  },
+
+  "interfaces": {
+    "input": "UART",
+    "output": "UART"
+  },
+
+  "platform": {
+    "host": "Raspberry Pi 5",
+    "dut": "Arduino UNO"
+  }
+}

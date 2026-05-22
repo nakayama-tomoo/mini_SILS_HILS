@@ -1,0 +1,163 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+def load_json(path: Path) -> dict:
+    with path.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def main() -> None:
+
+    repo_root = (
+        Path(__file__)
+        .resolve()
+        .parents[1]
+    )
+
+    comparison_summary = load_json(
+        repo_root
+        / "results"
+        / "comparison_summary.json"
+    )
+
+    hils_summary = load_json(
+        repo_root
+        / "results"
+        / "hils"
+        / "hils_summary.json"
+    )
+
+    traceability = load_json(
+        repo_root
+        / "traceability"
+        / "scenario_traceability.json"
+    )
+
+    traceability_map = {}
+
+    for scenario in (
+        traceability["scenarios"]
+    ):
+
+        traceability_map[
+            scenario["scenario_id"]
+        ] = scenario[
+            "requirement_ids"
+        ]
+
+    hils_map = {}
+
+    for scenario in (
+        hils_summary["scenario_results"]
+    ):
+
+        hils_map[
+            scenario["scenario"].upper()
+        ] = scenario["result"]
+
+    evidence_entries = []
+
+    for comparison in (
+        comparison_summary["comparisons"]
+    ):
+
+        scenario_name = (
+            comparison["scenario"]
+        )
+
+        scenario_id = (
+            scenario_name
+            .split("_")
+        )
+
+        scenario_id = (
+            scenario_id[0]
+            + "-"
+            + scenario_id[1]
+        ).upper()
+
+        requirement_ids = (
+            traceability_map.get(
+                scenario_id,
+                [],
+            )
+        )
+
+        evidence_entries.append({
+
+            "scenario_id":
+                scenario_id,
+
+            "version_id":
+                "fan_control_v1",
+
+            "requirement_ids":
+                requirement_ids,
+
+            "comparison":
+                comparison["comparison"],
+
+            "python_result":
+                comparison["python_result"],
+
+            "cpp_result":
+                comparison["cpp_result"],
+
+            "hils_result":
+                hils_map.get(
+                    scenario_id.replace("-", "_"),
+                    "NOT_FOUND"
+                ),
+
+            "implementations": [
+                "python_sils",
+                "cpp_sils",
+            ],
+
+            "environments": [
+                "PYTHON_SILS",
+                "CPP_SILS",
+                "ARDUINO_HILS"
+            ],
+
+        })
+
+    manifest = {
+
+        "schema_version":
+            "0.1.0",
+
+        "overall":
+            comparison_summary["overall"],
+
+        "evidence":
+            evidence_entries,
+    }
+
+    output_path = (
+        repo_root
+        / "evidence"
+        / "evidence_manifest.json"
+    )
+
+    with output_path.open(
+        "w",
+        encoding="utf-8",
+    ) as file:
+
+        json.dump(
+            manifest,
+            file,
+            indent=2,
+        )
+
+    print(
+        f"Generated: {output_path}"
+    )
+
+
+if __name__ == "__main__":
+    main()

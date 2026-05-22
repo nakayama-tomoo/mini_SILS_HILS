@@ -1,0 +1,22 @@
+{
+  "environment_id": "PYTHON_SILS",
+
+  "type": "SILS",
+
+  "implementation": "python_sils",
+
+  "execution_model": {
+    "logical_time": true,
+    "realtime": false
+  },
+
+  "interfaces": {
+    "input": "CSV",
+    "output": "JSON"
+  },
+
+  "platform": {
+    "language": "Python",
+    "runtime": "CPython"
+  }
+}

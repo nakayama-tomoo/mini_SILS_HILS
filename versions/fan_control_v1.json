@@ -1,0 +1,17 @@
+{
+  "version_id": "fan_control_v1",
+  "description": "Initial radiator fan control hysteresis thresholds.",
+  "thresholds": {
+    "low_on_c": 95,
+    "off_c": 90,
+    "high_on_c": 105,
+    "high_off_c": 100
+  },
+  "compatible_scenarios": [
+    "SC-01",
+    "SC-02",
+    "SC-03",
+    "SC-04"
+  ],
+  "status": "baseline"
+}
