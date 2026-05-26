@@ -63,6 +63,9 @@ jobs:
       - name: Run governance checks
         run: python tools/run_governance_checks.py
 
+      - name: Check evidence manifest references
+        run: python tools/check_evidence_manifest.py
+
       - name: Validate evidence files
         run: |
           python -m json.tool evidence/evidence_manifest.json > /tmp/evidence_manifest_check.json
