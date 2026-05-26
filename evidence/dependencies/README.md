@@ -39,6 +39,69 @@ It is not yet separated into:
 - development-tool SBOM
 - container SBOM
 
+## Regeneration Procedure
+
+The Python dependency evidence can be regenerated from the repository root.
+
+Before regeneration, activate the Python virtual environment used for this PoC.
+
+```bash
+source .venv/bin/activate
+```
+
+Regenerate the `pip freeze` evidence.
+
+```bash
+python -m pip freeze > evidence/dependencies/python_freeze.txt
+```
+
+This command records the Python packages installed in the current virtual environment.
+
+Regenerate the Python environment SBOM.
+
+```bash
+cyclonedx-py environment -o evidence/sbom/python_environment_sbom.json
+```
+
+This command generates a CycloneDX SBOM (Software Bill of Materials) from the current Python virtual environment.
+
+## Regeneration Check
+
+After regeneration, confirm that the expected files exist.
+
+```bash
+ls -l evidence/dependencies/python_freeze.txt
+ls -l evidence/sbom/python_environment_sbom.json
+```
+
+Confirm the beginning of each generated file.
+
+```bash
+sed -n '1,40p' evidence/dependencies/python_freeze.txt
+sed -n '1,80p' evidence/sbom/python_environment_sbom.json
+```
+
+Confirm the Git diff.
+
+```bash
+git diff evidence/dependencies/README.md
+git diff evidence/dependencies/python_freeze.txt
+git diff evidence/sbom/python_environment_sbom.json
+```
+
+If only intended changes are shown, the regeneration procedure is considered valid for Phase ③-A2.
+
+## Regeneration Notes
+
+The regenerated evidence depends on the active Python virtual environment.
+
+Therefore, confirm the following points before committing the result:
+
+- The `.venv` virtual environment is activated.
+- No unintended Python packages are included.
+- `python_freeze.txt` and `python_environment_sbom.json` are updated together when dependency evidence is regenerated.
+- This procedure is for personal PoC (Proof of Concept) evidence only.
+
 ## Deferred Items
 
 The following items are deferred to later phases:

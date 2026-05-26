@@ -748,7 +748,7 @@
       "version": "0.1.0"
     },
     {
-      "bom-ref": "BomRef.7871412089944168.000205629641205074",
+      "bom-ref": "BomRef.6438288925594794.19427782236174207",
       "description": "Scenario-driven mini SILS and mini HILS verification platform PoC",
       "externalReferences": [
         {
@@ -770,7 +770,7 @@
       "version": "0.1.0"
     },
     {
-      "bom-ref": "BomRef.4254420407231989.8868905333638117",
+      "bom-ref": "BomRef.5939348832143008.8042354212628432",
       "description": "A personal mini SILS PoC using fictional electric radiator fan control scenarios",
       "externalReferences": [
         {
@@ -1754,7 +1754,7 @@
     }
   ],
   "metadata": {
-    "timestamp": "2026-05-26T02:10:56.953867+00:00",
+    "timestamp": "2026-05-26T03:50:34.997943+00:00",
     "tools": {
       "components": [
         {
@@ -1858,7 +1858,7 @@
       ]
     }
   },
-  "serialNumber": "urn:uuid:9284f408-5112-4403-9bda-8426f42f6c19",
+  "serialNumber": "urn:uuid:1bce6f8c-7693-4606-8b96-a9b546b4e436",
   "version": 1,
   "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
   "bomFormat": "CycloneDX",
