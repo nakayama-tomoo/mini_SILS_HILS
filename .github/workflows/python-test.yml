@@ -63,6 +63,13 @@ jobs:
       - name: Run governance checks
         run: python tools/run_governance_checks.py
 
+      - name: Validate evidence files
+        run: |
+          python -m json.tool evidence/evidence_manifest.json > /tmp/evidence_manifest_check.json
+          test -f evidence/evidence_manifest.json
+          test -f evidence/dependencies/python_freeze.txt
+          test -f evidence/dependencies/README.md
+
       - name: Docker build
         run: |
           docker build \
@@ -111,5 +118,16 @@ jobs:
         with:
           name: all-results-summary
           path: results/all_results_summary.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload evidence package
+        uses: actions/upload-artifact@v7
+        with:
+          name: evidence-package
+          path: |
+            evidence/evidence_manifest.json
+            evidence/dependencies/python_freeze.txt
+            evidence/dependencies/README.md
           if-no-files-found: error
           retention-days: 14
