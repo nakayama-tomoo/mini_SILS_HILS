@@ -37,5 +37,3 @@ cpp/test_fan_control
 cpp/build/
 
 # C++ scenario results
-cpp/results/*.csv
-!cpp/results/.gitkeep
