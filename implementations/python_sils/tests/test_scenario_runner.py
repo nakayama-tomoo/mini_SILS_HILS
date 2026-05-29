@@ -7,45 +7,29 @@ from mini_sils.scenario_runner import (
 )
 
 
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+COMMON_SCENARIO_DIR = PROJECT_ROOT / "common" / "scenario" / "fan_control"
+
+
 SCENARIO_VERSION_MATRIX = [
-
     (
-        Path(
-            "scenarios/fan_control/"
-            "sc_01_traffic_warmup_cooldown.csv"
-        ),
+        COMMON_SCENARIO_DIR / "sc_01_traffic_warmup_cooldown.csv",
         "fan_control_v1",
     ),
-
     (
-        Path(
-            "scenarios/fan_control/"
-            "sc_02_around_95deg_fluctuation.csv"
-        ),
+        COMMON_SCENARIO_DIR / "sc_02_around_95deg_fluctuation.csv",
         "fan_control_v1",
     ),
-
     (
-        Path(
-            "scenarios/fan_control/"
-            "sc_03_rapid_heatup_recovery.csv"
-        ),
+        COMMON_SCENARIO_DIR / "sc_03_rapid_heatup_recovery.csv",
         "fan_control_v1",
     ),
-
     (
-        Path(
-            "scenarios/fan_control/"
-            "sc_04_high_temp_oscillation.csv"
-        ),
+        COMMON_SCENARIO_DIR / "sc_04_high_temp_oscillation.csv",
         "fan_control_v1",
     ),
-
     (
-        Path(
-            "scenarios/fan_control/"
-            "sc_05_v2_threshold_validation.csv"
-        ),
+        COMMON_SCENARIO_DIR / "sc_05_v2_threshold_validation.csv",
         "fan_control_v2",
     ),
 ]

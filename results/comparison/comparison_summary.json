@@ -1,0 +1,29 @@
+{
+  "overall": "PASS",
+  "comparisons": [
+    {
+      "scenario": "sc_01_traffic_warmup_cooldown",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "comparison": "MATCH"
+    },
+    {
+      "scenario": "sc_02_around_95deg_fluctuation",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "comparison": "MATCH"
+    },
+    {
+      "scenario": "sc_03_rapid_heatup_recovery",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "comparison": "MATCH"
+    },
+    {
+      "scenario": "sc_04_high_temp_oscillation",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "comparison": "MATCH"
+    }
+  ]
+}

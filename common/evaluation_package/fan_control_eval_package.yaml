@@ -1,0 +1,25 @@
+evaluation_package_id: fan_control_eval_package_v1
+
+description: >
+  Evaluation package for the fan control Mini-SILS-HILS PoC.
+  The same scenarios and canonical data are executed across
+  Python SILS, C++ SILS, and mini HILS environments.
+
+scenario_suite: common/scenario/scenario_suite.yaml
+
+signal_dictionary: common/signals/fan_control_signal_dictionary.yaml
+
+expected_behavior: common/expected/fan_control_expected.yaml
+
+judge_rules: common/judge/fan_control_judge_rules.yaml
+
+supported_environments:
+  - python_sils
+  - cpp_sils
+  - mini_hils
+
+result_policy:
+  raw_results_dir: results/raw
+  normalized_results_dir: results/normalized
+  comparison_dir: results/comparison
+  report_dir: results/reports

@@ -1,0 +1,22 @@
+judge_rule_id: fan_control_judge_rules_v1
+
+description: >
+  Judge rules for comparing Python SILS, C++ SILS, and mini HILS results.
+
+default_result_policy:
+  python_cpp_equivalence: required
+  hils_verdict: required
+  overall_verdict_rule: all_required_items_must_pass
+
+environment_tolerance:
+  python_sils:
+    timing_tolerance_sec: 0.0
+    output_equivalence: exact
+
+  cpp_sils:
+    timing_tolerance_sec: 0.0
+    output_equivalence: exact
+
+  mini_hils:
+    timing_tolerance_sec: 0.1
+    output_equivalence: logical
