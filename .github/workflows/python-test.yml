@@ -44,14 +44,14 @@ jobs:
             libgtest-dev
 
       - name: Configure CMake
-        run: cmake -S implementations/python_sils/cpp -B implementations/python_sils/cpp/build
+        run: cmake -S implementations/cpp_sils -B implementations/cpp_sils/build
 
       - name: Build C++ targets
-        run: cmake --build implementations/python_sils/cpp/build
+        run: cmake --build implementations/cpp_sils/build
 
       - name: Run CTest
         run: |
-          cd implementations/python_sils/cpp/build
+          cd implementations/cpp_sils/build
           ctest --output-on-failure
 
       - name: Run suite orchestration
@@ -96,7 +96,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: cpp-fan-control-results
-          path: implementations/python_sils/cpp/results/*.csv
+          path: implementations/cpp_sils/results/*.csv
           if-no-files-found: error
           retention-days: 14
 
