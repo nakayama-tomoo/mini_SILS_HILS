@@ -1,0 +1,5 @@
+build/
+main
+test_fan_control
+results/*.csv
+!results/.gitkeep

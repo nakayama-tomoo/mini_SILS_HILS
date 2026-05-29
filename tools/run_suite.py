@@ -67,7 +67,7 @@ def main():
 
             cpp_result = subprocess.run(
                 cpp_command,
-                cwd=BASE_DIR / "implementations" / "python_sils" / "cpp",
+                cwd=BASE_DIR / "implementations" / "cpp_sils",
             )
 
             print(
