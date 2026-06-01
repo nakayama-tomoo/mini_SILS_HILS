@@ -17,9 +17,8 @@ def main() -> None:
 
     scenario_path = (
         repo_root
-        / "implementations"
-        / "python_sils"
-        / "scenarios"
+        / "common"
+        / "scenario"
         / "fan_control"
         / "sc_05_v2_threshold_validation.csv"
     )
