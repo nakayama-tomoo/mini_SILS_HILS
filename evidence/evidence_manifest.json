@@ -27,8 +27,8 @@
         "REQ-FAN-001"
       ],
       "comparison": "MATCH",
-      "python_result": "FOUND",
-      "cpp_result": "FOUND",
+      "python_result": "implementations/python_sils/results/fan_control/sc_01_traffic_warmup_cooldown_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_01_traffic_warmup_cooldown_cpp_results.csv",
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
@@ -47,8 +47,8 @@
         "REQ-FAN-001"
       ],
       "comparison": "MATCH",
-      "python_result": "FOUND",
-      "cpp_result": "FOUND",
+      "python_result": "implementations/python_sils/results/fan_control/sc_02_around_95deg_fluctuation_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_02_around_95deg_fluctuation_cpp_results.csv",
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
@@ -67,8 +67,8 @@
         "REQ-FAN-002"
       ],
       "comparison": "MATCH",
-      "python_result": "FOUND",
-      "cpp_result": "FOUND",
+      "python_result": "implementations/python_sils/results/fan_control/sc_03_rapid_heatup_recovery_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_03_rapid_heatup_recovery_cpp_results.csv",
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
@@ -88,9 +88,30 @@
         "REQ-FAN-003"
       ],
       "comparison": "MATCH",
-      "python_result": "FOUND",
-      "cpp_result": "FOUND",
+      "python_result": "implementations/python_sils/results/fan_control/sc_04_high_temp_oscillation_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_04_high_temp_oscillation_cpp_results.csv",
       "hils_result": "PASS",
+      "implementations": [
+        "python_sils",
+        "cpp_sils"
+      ],
+      "environments": [
+        "PYTHON_SILS",
+        "CPP_SILS",
+        "ARDUINO_HILS"
+      ]
+    },
+    {
+      "scenario_id": "SC-05",
+      "version_id": "fan_control_v1",
+      "requirement_ids": [
+        "REQ-FAN-001",
+        "REQ-FAN-002"
+      ],
+      "comparison": "SKIPPED",
+      "python_result": "implementations/python_sils/results/fan_control/sc_05_v2_threshold_validation_results.csv",
+      "cpp_result": null,
+      "hils_result": "NOT_FOUND",
       "implementations": [
         "python_sils",
         "cpp_sils"

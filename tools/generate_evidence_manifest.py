@@ -98,13 +98,13 @@ def main() -> None:
                 requirement_ids,
 
             "comparison":
-                comparison["comparison"],
+                comparison.get("comparison", comparison.get("python_cpp", comparison.get("overall", "UNKNOWN"))),
 
             "python_result":
-                comparison["python_result"],
+                comparison.get("python_result"),
 
             "cpp_result":
-                comparison["cpp_result"],
+                comparison.get("cpp_result"),
 
             "hils_result":
                 hils_map.get(

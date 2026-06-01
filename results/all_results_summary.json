@@ -1,29 +1,149 @@
 {
+  "suite": "fan_control_suite",
   "overall": "PASS",
+  "total_scenarios": 5,
+  "passed_scenarios": 5,
+  "failed_scenarios": 0,
+  "scenarios": [
+    {
+      "id": "SC_01",
+      "scenario": "sc_01_traffic_warmup_cooldown",
+      "description": "traffic warmup cooldown",
+      "category": "normal",
+      "version_id": "fan_control_v1",
+      "targets": [
+        "python_sils",
+        "cpp_sils",
+        "mini_hils"
+      ],
+      "python_sils": "PASS",
+      "cpp_sils": "PASS",
+      "python_cpp": "MATCH",
+      "mini_hils": "PASS",
+      "overall": "PASS"
+    },
+    {
+      "id": "SC_02",
+      "scenario": "sc_02_around_95deg_fluctuation",
+      "description": "around 95deg fluctuation",
+      "category": "boundary",
+      "version_id": "fan_control_v1",
+      "targets": [
+        "python_sils",
+        "cpp_sils",
+        "mini_hils"
+      ],
+      "python_sils": "PASS",
+      "cpp_sils": "PASS",
+      "python_cpp": "MATCH",
+      "mini_hils": "PASS",
+      "overall": "PASS"
+    },
+    {
+      "id": "SC_03",
+      "scenario": "sc_03_rapid_heatup_recovery",
+      "description": "rapid heatup recovery",
+      "category": "stress",
+      "version_id": "fan_control_v1",
+      "targets": [
+        "python_sils",
+        "cpp_sils",
+        "mini_hils"
+      ],
+      "python_sils": "PASS",
+      "cpp_sils": "PASS",
+      "python_cpp": "MATCH",
+      "mini_hils": "PASS",
+      "overall": "PASS"
+    },
+    {
+      "id": "SC_04",
+      "scenario": "sc_04_high_temp_oscillation",
+      "description": "high temperature oscillation",
+      "category": "oscillation",
+      "version_id": "fan_control_v1",
+      "targets": [
+        "python_sils",
+        "cpp_sils",
+        "mini_hils"
+      ],
+      "python_sils": "PASS",
+      "cpp_sils": "PASS",
+      "python_cpp": "MATCH",
+      "mini_hils": "PASS",
+      "overall": "PASS"
+    },
+    {
+      "id": "SC_05",
+      "scenario": "sc_05_v2_threshold_validation",
+      "description": "v2 threshold validation",
+      "category": "version_validation",
+      "version_id": "fan_control_v2",
+      "targets": [
+        "python_sils"
+      ],
+      "python_sils": "PASS",
+      "cpp_sils": "SKIPPED",
+      "python_cpp": "SKIPPED",
+      "mini_hils": "SKIPPED",
+      "overall": "PASS"
+    }
+  ],
   "comparisons": [
     {
       "scenario": "sc_01_traffic_warmup_cooldown",
+      "version_id": "fan_control_v1",
+      "comparison": "MATCH",
       "python_cpp": "MATCH",
       "hils": "PASS",
-      "overall": "MATCH"
+      "python_result": "implementations/python_sils/results/fan_control/sc_01_traffic_warmup_cooldown_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_01_traffic_warmup_cooldown_cpp_results.csv",
+      "hils_result": "results/hils/hils_summary.json",
+      "overall": "PASS"
     },
     {
       "scenario": "sc_02_around_95deg_fluctuation",
+      "version_id": "fan_control_v1",
+      "comparison": "MATCH",
       "python_cpp": "MATCH",
       "hils": "PASS",
-      "overall": "MATCH"
+      "python_result": "implementations/python_sils/results/fan_control/sc_02_around_95deg_fluctuation_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_02_around_95deg_fluctuation_cpp_results.csv",
+      "hils_result": "results/hils/hils_summary.json",
+      "overall": "PASS"
     },
     {
       "scenario": "sc_03_rapid_heatup_recovery",
+      "version_id": "fan_control_v1",
+      "comparison": "MATCH",
       "python_cpp": "MATCH",
       "hils": "PASS",
-      "overall": "MATCH"
+      "python_result": "implementations/python_sils/results/fan_control/sc_03_rapid_heatup_recovery_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_03_rapid_heatup_recovery_cpp_results.csv",
+      "hils_result": "results/hils/hils_summary.json",
+      "overall": "PASS"
     },
     {
       "scenario": "sc_04_high_temp_oscillation",
+      "version_id": "fan_control_v1",
+      "comparison": "MATCH",
       "python_cpp": "MATCH",
       "hils": "PASS",
-      "overall": "MATCH"
+      "python_result": "implementations/python_sils/results/fan_control/sc_04_high_temp_oscillation_results.csv",
+      "cpp_result": "implementations/cpp_sils/results/sc_04_high_temp_oscillation_cpp_results.csv",
+      "hils_result": "results/hils/hils_summary.json",
+      "overall": "PASS"
+    },
+    {
+      "scenario": "sc_05_v2_threshold_validation",
+      "version_id": "fan_control_v2",
+      "comparison": "SKIPPED",
+      "python_cpp": "SKIPPED",
+      "hils": "SKIPPED",
+      "python_result": "implementations/python_sils/results/fan_control/sc_05_v2_threshold_validation_results.csv",
+      "cpp_result": null,
+      "hils_result": null,
+      "overall": "PASS"
     }
   ]
 }
