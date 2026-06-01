@@ -28,6 +28,7 @@ def main():
             f"{scenario['description']}"
         )
 
+        print(f"  version_id: {scenario.get('version_id', 'unspecified')}")
         print(f"  file: {scenario['file']}")
         print(f"  targets: {', '.join(scenario['targets'])}")
         print()

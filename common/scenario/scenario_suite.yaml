@@ -12,6 +12,7 @@ scenarios:
   - id: SC_01
     description: traffic warmup cooldown
     category: normal
+    version_id: fan_control_v1
     file: fan_control/sc_01_traffic_warmup_cooldown.csv
 
     targets:
@@ -22,6 +23,7 @@ scenarios:
   - id: SC_02
     description: around 95deg fluctuation
     category: boundary
+    version_id: fan_control_v1
     file: fan_control/sc_02_around_95deg_fluctuation.csv
 
     targets:
@@ -32,6 +34,7 @@ scenarios:
   - id: SC_03
     description: rapid heatup recovery
     category: stress
+    version_id: fan_control_v1
     file: fan_control/sc_03_rapid_heatup_recovery.csv
 
     targets:
@@ -42,6 +45,7 @@ scenarios:
   - id: SC_04
     description: high temperature oscillation
     category: oscillation
+    version_id: fan_control_v1
     file: fan_control/sc_04_high_temp_oscillation.csv
 
     targets:
