@@ -62,11 +62,3 @@ scenarios:
     targets:
       - python_sils
 
-  - id: SC_05
-    description: v2 threshold validation
-    category: version_validation
-    version_id: fan_control_v2
-    file: fan_control/sc_05_v2_threshold_validation.csv
-
-    targets:
-      - python_sils

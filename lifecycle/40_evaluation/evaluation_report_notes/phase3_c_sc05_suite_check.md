@@ -55,3 +55,28 @@ because cpp_sils is not listed in the SC_05 targets.
 ## Follow-up
 
 Later phases may update comparison and verification report generation so that SC_05 appears explicitly in integrated comparison and verification reports.
+
+## Correction
+
+During Phase 3-C, SC_05 was accidentally appended twice to:
+
+    common/scenario/scenario_suite.yaml
+
+The duplicate SC_05 entry was removed.
+
+After correction, the scenario suite contains:
+
+    SC_01
+    SC_02
+    SC_03
+    SC_04
+    SC_05
+
+SC_05 appears only once.
+
+Expected corrected suite summary:
+
+    total_scenarios: 5
+    passed_scenarios: 5
+    failed_scenarios: 0
+    overall: PASS

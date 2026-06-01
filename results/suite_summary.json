@@ -1,7 +1,7 @@
 {
   "suite": "fan_control_suite",
-  "total_scenarios": 6,
-  "passed_scenarios": 6,
+  "total_scenarios": 5,
+  "passed_scenarios": 5,
   "failed_scenarios": 0,
   "overall": "PASS"
 }
