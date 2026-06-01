@@ -105,6 +105,48 @@
       "environment": "ARDUINO_HILS",
       "scenario_id": "SC-04",
       "result": "PASS"
+    },
+    {
+      "requirement_id": "REQ-FAN-001",
+      "version_id": "fan_control_v1",
+      "environment": "PYTHON_SILS",
+      "scenario_id": "SC-05",
+      "result": "PASS"
+    },
+    {
+      "requirement_id": "REQ-FAN-001",
+      "version_id": "fan_control_v1",
+      "environment": "CPP_SILS",
+      "scenario_id": "SC-05",
+      "result": "PASS"
+    },
+    {
+      "requirement_id": "REQ-FAN-001",
+      "version_id": "fan_control_v1",
+      "environment": "ARDUINO_HILS",
+      "scenario_id": "SC-05",
+      "result": "NOT_FOUND"
+    },
+    {
+      "requirement_id": "REQ-FAN-002",
+      "version_id": "fan_control_v1",
+      "environment": "PYTHON_SILS",
+      "scenario_id": "SC-05",
+      "result": "PASS"
+    },
+    {
+      "requirement_id": "REQ-FAN-002",
+      "version_id": "fan_control_v1",
+      "environment": "CPP_SILS",
+      "scenario_id": "SC-05",
+      "result": "PASS"
+    },
+    {
+      "requirement_id": "REQ-FAN-002",
+      "version_id": "fan_control_v1",
+      "environment": "ARDUINO_HILS",
+      "scenario_id": "SC-05",
+      "result": "NOT_FOUND"
     }
   ]
 }
