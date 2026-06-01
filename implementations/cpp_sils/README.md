@@ -62,11 +62,11 @@ Run:
 
 Configure:
 
-cmake -S cpp -B cpp/build
+cmake -S implementations/cpp_sils -B implementations/cpp_sils/build
 
 Build:
 
-cmake --build cpp/build
+cmake --build implementations/cpp_sils/build
 
 Run sample executable:
 
@@ -78,6 +78,6 @@ Run GoogleTest executable:
 
 Run CTest:
 
-cd cpp/build
+cd implementations/cpp_sils/build
 ctest --output-on-failure
 cd ../..

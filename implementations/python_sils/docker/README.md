@@ -1,21 +1,36 @@
-# Docker Execution
+# Python SILS Docker
 
-## Purpose
+This Dockerfile is for Python SILS only.
 
-This Docker environment provides a reproducible execution environment for the mini SILS(Software-in-the-Loop Simulation) PoC(Proof of Concept).
+## Scope
 
-The container includes:
+This image validates the Python SILS package and tests.
 
-- Python
-- pytest
-- CMake
-- GoogleTest
-- CTest
+It does not build or run C++ SILS.
+
+C++ SILS is located at:
+
+    implementations/cpp_sils/
+
+C++ SILS Docker support may be added separately in a later phase.
 
 ## Build
 
-docker build -t mini-sils-poc -f docker/Dockerfile .
+Run from the repository root:
+
+    docker build -t mini-sils-python-sils -f implementations/python_sils/docker/Dockerfile .
 
 ## Run
 
-docker run --rm mini-sils-poc
+Run from the repository root:
+
+    docker run --rm mini-sils-python-sils
+
+## Notes
+
+The Docker build context is the repository root so that the image can access shared assets such as:
+
+    common/
+    implementations/python_sils/
+
+This is aligned with the Mini-SILS-HILS architecture where common scenario assets are shared across environments.

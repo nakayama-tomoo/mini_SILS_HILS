@@ -76,13 +76,12 @@ jobs:
       - name: Docker build
         run: |
           docker build \
-            -t implementations/python_sils \
+            -t mini-sils-python-sils \
             -f implementations/python_sils/docker/Dockerfile \
-            implementations/python_sils
+            .
 
-#      - name: Docker run
-#        run: |
-#          docker run --rm implementations/python_sils
+      - name: Docker run
+        run: docker run --rm mini-sils-python-sils
 
       - name: Upload Python SILS result CSV
         uses: actions/upload-artifact@v7
