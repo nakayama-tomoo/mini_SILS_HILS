@@ -21,7 +21,7 @@
   ],
   "evidence": [
     {
-      "scenario_id": "SC-01",
+      "scenario_id": "SC_01",
       "version_id": "fan_control_v1",
       "requirement_ids": [
         "REQ-FAN-001"
@@ -32,7 +32,8 @@
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
-        "cpp_sils"
+        "cpp_sils",
+        "arduino_hils"
       ],
       "environments": [
         "PYTHON_SILS",
@@ -41,7 +42,7 @@
       ]
     },
     {
-      "scenario_id": "SC-02",
+      "scenario_id": "SC_02",
       "version_id": "fan_control_v1",
       "requirement_ids": [
         "REQ-FAN-001"
@@ -52,7 +53,8 @@
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
-        "cpp_sils"
+        "cpp_sils",
+        "arduino_hils"
       ],
       "environments": [
         "PYTHON_SILS",
@@ -61,7 +63,7 @@
       ]
     },
     {
-      "scenario_id": "SC-03",
+      "scenario_id": "SC_03",
       "version_id": "fan_control_v1",
       "requirement_ids": [
         "REQ-FAN-002"
@@ -72,7 +74,8 @@
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
-        "cpp_sils"
+        "cpp_sils",
+        "arduino_hils"
       ],
       "environments": [
         "PYTHON_SILS",
@@ -81,7 +84,7 @@
       ]
     },
     {
-      "scenario_id": "SC-04",
+      "scenario_id": "SC_04",
       "version_id": "fan_control_v1",
       "requirement_ids": [
         "REQ-FAN-002",
@@ -93,7 +96,8 @@
       "hils_result": "PASS",
       "implementations": [
         "python_sils",
-        "cpp_sils"
+        "cpp_sils",
+        "arduino_hils"
       ],
       "environments": [
         "PYTHON_SILS",
@@ -102,8 +106,8 @@
       ]
     },
     {
-      "scenario_id": "SC-05",
-      "version_id": "fan_control_v1",
+      "scenario_id": "SC_05",
+      "version_id": "fan_control_v2",
       "requirement_ids": [
         "REQ-FAN-001",
         "REQ-FAN-002"
@@ -111,15 +115,12 @@
       "comparison": "SKIPPED",
       "python_result": "implementations/python_sils/results/fan_control/sc_05_v2_threshold_validation_results.csv",
       "cpp_result": null,
-      "hils_result": "NOT_FOUND",
+      "hils_result": "SKIPPED",
       "implementations": [
-        "python_sils",
-        "cpp_sils"
+        "python_sils"
       ],
       "environments": [
-        "PYTHON_SILS",
-        "CPP_SILS",
-        "ARDUINO_HILS"
+        "PYTHON_SILS"
       ]
     }
   ]

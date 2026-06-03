@@ -4,23 +4,23 @@
     {
       "requirement_id": "REQ-FAN-001",
       "covered_by": [
-        "SC-01",
-        "SC-02",
-        "SC-05"
+        "SC_01",
+        "SC_02",
+        "SC_05"
       ]
     },
     {
       "requirement_id": "REQ-FAN-002",
       "covered_by": [
-        "SC-03",
-        "SC-04",
-        "SC-05"
+        "SC_03",
+        "SC_04",
+        "SC_05"
       ]
     },
     {
       "requirement_id": "REQ-FAN-003",
       "covered_by": [
-        "SC-04"
+        "SC_04"
       ]
     }
   ]
