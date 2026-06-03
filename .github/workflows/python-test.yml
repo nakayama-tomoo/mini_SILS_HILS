@@ -62,6 +62,8 @@ jobs:
 
       - name: Run governance checks
         run: python tools/run_governance_checks.py
+      - name: Ensure generated artifacts are committed
+        run: git diff --exit-code
 
       - name: Check evidence manifest references
         run: python tools/check_evidence_manifest.py
