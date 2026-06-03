@@ -61,4 +61,5 @@ scenarios:
 
     targets:
       - python_sils
+      - cpp_sils
 

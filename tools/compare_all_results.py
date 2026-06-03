@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import csv
 import json
+import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
-import yaml
+try:
+    import yaml
+except ImportError as exc:
+    raise SystemExit(
+        "PyYAML is required. Activate the project virtual environment first."
+    ) from exc
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +31,17 @@ PYTHON_RESULTS_DIR = (
     / "fan_control"
 )
 
-CPP_RESULTS_DIR = (
+CPP_RESULTS_DIRS = [
+    BASE_DIR
+    / "implementations"
+    / "python_sils"
+    / "cpp"
+    / "results",
     BASE_DIR
     / "implementations"
     / "cpp_sils"
-    / "results"
-)
+    / "results",
+]
 
 HILS_SUMMARY_PATH = (
     BASE_DIR
@@ -39,19 +50,13 @@ HILS_SUMMARY_PATH = (
     / "hils_summary.json"
 )
 
-ALL_RESULTS_PATH = (
+ALL_RESULTS_OUTPUT_PATH = (
     BASE_DIR
     / "results"
     / "all_results_summary.json"
 )
 
-LEGACY_COMPARISON_PATH = (
-    BASE_DIR
-    / "results"
-    / "comparison_summary.json"
-)
-
-COMPARISON_DIR_PATH = (
+COMPARISON_OUTPUT_PATH = (
     BASE_DIR
     / "results"
     / "comparison"
@@ -59,325 +64,364 @@ COMPARISON_DIR_PATH = (
 )
 
 
-def load_json_if_exists(path: Path) -> Any:
+def load_yaml(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as file:
+        return yaml.safe_load(file)
+
+
+def load_json_if_exists(path: Path) -> dict[str, Any]:
     if not path.exists():
-        return None
+        return {}
 
     with path.open("r", encoding="utf-8") as file:
         return json.load(file)
 
 
-def load_csv_rows(path: Path) -> list[dict[str, str]] | None:
-    if not path.exists():
-        return None
-
-    with path.open("r", encoding="utf-8", newline="") as file:
+def load_csv(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8") as file:
         return list(csv.DictReader(file))
 
 
-def status_from_rows(rows: list[dict[str, str]] | None) -> str:
-    if rows is None:
-        return "MISSING"
+def normalize_scenario_id(value: str) -> str:
+    normalized = value.strip().upper()
+
+    if normalized.startswith("SC_"):
+        return normalized
+
+    if normalized.startswith("SC-"):
+        return normalized.replace("-", "_")
+
+    match = re.search(r"SC[_-]?(\d+)", normalized)
+
+    if match:
+        return f"SC_{match.group(1).zfill(2)}"
+
+    return normalized
+
+
+def result_status_from_csv(path: Optional[Path]) -> str:
+    if path is None or not path.exists():
+        return "NOT_FOUND"
+
+    rows = load_csv(path)
 
     if not rows:
-        return "EMPTY"
+        return "FAIL"
 
-    if all(row.get("match") == "PASS" for row in rows):
-        return "PASS"
+    for row in rows:
+        value = (
+            row.get("match")
+            or row.get("result")
+            or row.get("overall")
+            or ""
+        ).strip().upper()
 
-    return "FAIL"
+        if value not in {"PASS", "MATCH"}:
+            return "FAIL"
+
+    return "PASS"
 
 
-def compare_python_cpp_rows(
-    python_rows: list[dict[str, str]] | None,
-    cpp_rows: list[dict[str, str]] | None,
+def first_value(row: dict[str, str], keys: list[str]) -> str:
+    for key in keys:
+        value = row.get(key)
+
+        if value is not None:
+            return value.strip().upper()
+
+    return ""
+
+
+def compare_python_cpp_csv(
+    python_path: Optional[Path],
+    cpp_path: Optional[Path],
 ) -> str:
-    if python_rows is None or cpp_rows is None:
-        return "MISSING"
+    if python_path is None or not python_path.exists():
+        return "MISMATCH"
+
+    if cpp_path is None or not cpp_path.exists():
+        return "MISMATCH"
+
+    python_rows = load_csv(python_path)
+    cpp_rows = load_csv(cpp_path)
 
     if len(python_rows) != len(cpp_rows):
         return "MISMATCH"
 
-    compare_keys = [
-        "time_s",
-        "coolant_temp_c",
-        "expected_fan_state",
+    actual_keys = [
         "actual_fan_state",
-        "match",
+        "actual_state",
+        "actual_fan_command",
+        "actual_command",
+        "actual",
     ]
 
     for python_row, cpp_row in zip(python_rows, cpp_rows):
-        for key in compare_keys:
-            if python_row.get(key) != cpp_row.get(key):
-                return "MISMATCH"
+        python_match = first_value(
+            python_row,
+            [
+                "match",
+                "result",
+                "overall",
+            ],
+        )
+
+        cpp_match = first_value(
+            cpp_row,
+            [
+                "match",
+                "result",
+                "overall",
+            ],
+        )
+
+        if python_match != cpp_match:
+            return "MISMATCH"
+
+        python_actual = first_value(python_row, actual_keys)
+        cpp_actual = first_value(cpp_row, actual_keys)
+
+        if python_actual and cpp_actual and python_actual != cpp_actual:
+            return "MISMATCH"
 
     return "MATCH"
 
 
-def normalize_status(value: Any) -> str:
-    if value is None:
-        return "UNKNOWN"
+def find_python_result(scenario_name: str) -> Optional[Path]:
+    path = PYTHON_RESULTS_DIR / f"{scenario_name}_results.csv"
 
-    if isinstance(value, str):
-        return value.upper()
+    if path.exists():
+        return path
 
-    if isinstance(value, dict):
-        for key in [
-            "overall",
-            "overall_status",
-            "overall_result",
-            "status",
-            "result",
-            "verdict",
-            "hils",
-            "hils_status",
-            "hils_result",
-        ]:
-            if key in value:
-                return normalize_status(value[key])
-
-    return "UNKNOWN"
+    return None
 
 
-def lookup_hils_status(
-    hils_summary: Any,
-    scenario_id: str,
-    scenario_name: str,
-) -> str:
-    if hils_summary is None:
-        return "MISSING"
+def find_cpp_result(scenario_name: str) -> Optional[Path]:
+    for directory in CPP_RESULTS_DIRS:
+        path = directory / f"{scenario_name}_cpp_results.csv"
 
-    if isinstance(hils_summary, list):
-        for item in hils_summary:
-            if not isinstance(item, dict):
+        if path.exists():
+            return path
+
+    return None
+
+
+def relative_path(path: Optional[Path]) -> Optional[str]:
+    if path is None:
+        return None
+
+    return str(path.relative_to(BASE_DIR))
+
+
+def build_hils_result_map(
+    hils_summary: dict[str, Any],
+) -> dict[str, str]:
+    result_map: dict[str, str] = {}
+
+    rows = []
+
+    for key in [
+        "scenario_results",
+        "scenarios",
+        "results",
+    ]:
+        candidate = hils_summary.get(key)
+
+        if isinstance(candidate, list):
+            rows = candidate
+            break
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+
+        result = (
+            row.get("result")
+            or row.get("overall")
+            or row.get("status")
+            or "UNKNOWN"
+        )
+
+        keys = [
+            row.get("scenario_id"),
+            row.get("scenario"),
+            row.get("id"),
+            row.get("name"),
+        ]
+
+        for key in keys:
+            if not key:
                 continue
 
-            identifiers = [
-                item.get("id"),
-                item.get("scenario_id"),
-                item.get("scenario"),
-                item.get("scenario_name"),
-                item.get("name"),
-            ]
+            key_text = str(key)
+            result_map[normalize_scenario_id(key_text)] = str(result)
+            result_map[Path(key_text).stem] = str(result)
 
-            if scenario_id in identifiers or scenario_name in identifiers:
-                return normalize_status(item)
-
-    if isinstance(hils_summary, dict):
-        for key in [
-            "scenarios",
-            "results",
-            "comparisons",
-        ]:
-            value = hils_summary.get(key)
-
-            if isinstance(value, list):
-                status = lookup_hils_status(
-                    value,
-                    scenario_id,
-                    scenario_name,
-                )
-
-                if status != "UNKNOWN":
-                    return status
-
-        for key in [
-            scenario_id,
-            scenario_name,
-        ]:
-            if key in hils_summary:
-                return normalize_status(hils_summary[key])
-
-        for key in [
-            "overall",
-            "overall_status",
-            "overall_result",
-            "status",
-            "result",
-            "verdict",
-            "hils",
-            "hils_status",
-            "hils_result",
-        ]:
-            if key in hils_summary:
-                status = normalize_status(hils_summary[key])
-                if status != "UNKNOWN":
-                    return status
-
-        # Legacy PoC fallback:
-        # Existing mini HILS evidence may only indicate that a HILS summary exists,
-        # without per-scenario keys. In that case, treat the legacy HILS summary
-        # as PASS for scenarios that target mini_hils.
-        return "PASS"
-
-    return "UNKNOWN"
+    return result_map
 
 
-def required_status_is_pass(status: str) -> bool:
-    return status in {
-        "PASS",
-        "MATCH",
-        "SKIPPED",
-    }
+def scenario_overall(
+    targets: list[str],
+    python_status: str,
+    cpp_status: str,
+    python_cpp_status: str,
+    hils_status: str,
+) -> str:
+    checks: list[bool] = []
+
+    if "python_sils" in targets:
+        checks.append(python_status == "PASS")
+
+    if "cpp_sils" in targets:
+        checks.append(cpp_status == "PASS")
+
+    if "python_sils" in targets and "cpp_sils" in targets:
+        checks.append(python_cpp_status == "MATCH")
+
+    if "mini_hils" in targets:
+        checks.append(hils_status == "PASS")
+
+    return "PASS" if checks and all(checks) else "FAIL"
 
 
 def main() -> None:
-    with SCENARIO_SUITE_PATH.open("r", encoding="utf-8") as file:
-        suite = yaml.safe_load(file)
-
+    scenario_suite = load_yaml(SCENARIO_SUITE_PATH)
     hils_summary = load_json_if_exists(HILS_SUMMARY_PATH)
+    hils_map = build_hils_result_map(hils_summary)
 
-    scenario_results: list[dict[str, Any]] = []
-    legacy_comparisons: list[dict[str, Any]] = []
+    scenario_records = []
+    comparison_records = []
 
-    for scenario in suite["scenarios"]:
+    for scenario in scenario_suite["scenarios"]:
         scenario_id = scenario["id"]
-        scenario_file = scenario["file"]
-        scenario_name = Path(scenario_file).stem
-        version_id = scenario.get("version_id", "fan_control_v1")
+        scenario_name = Path(scenario["file"]).stem
+        version_id = scenario.get("version_id", "UNKNOWN")
         targets = scenario.get("targets", [])
 
-        python_rows = None
-        cpp_rows = None
-        python_result_rel = None
-        cpp_result_rel = None
-        hils_result_rel = None
+        python_result_path = find_python_result(scenario_name)
+        cpp_result_path = find_cpp_result(scenario_name)
 
         if "python_sils" in targets:
-            python_result_path = (
-                PYTHON_RESULTS_DIR
-                / f"{scenario_name}_results.csv"
-            )
-            python_rows = load_csv_rows(python_result_path)
-            python_result_rel = str(python_result_path.relative_to(BASE_DIR))
-            python_status = status_from_rows(python_rows)
+            python_status = result_status_from_csv(python_result_path)
         else:
             python_status = "SKIPPED"
 
         if "cpp_sils" in targets:
-            cpp_result_path = (
-                CPP_RESULTS_DIR
-                / f"{scenario_name}_cpp_results.csv"
-            )
-
-            if version_id != "fan_control_v1":
-                cpp_status = "NOT_SUPPORTED"
-                python_cpp_status = "SKIPPED"
-            else:
-                cpp_rows = load_csv_rows(cpp_result_path)
-                cpp_result_rel = str(cpp_result_path.relative_to(BASE_DIR))
-                cpp_status = status_from_rows(cpp_rows)
-                python_cpp_status = compare_python_cpp_rows(
-                    python_rows,
-                    cpp_rows,
-                )
+            cpp_status = result_status_from_csv(cpp_result_path)
         else:
             cpp_status = "SKIPPED"
+
+        if "python_sils" in targets and "cpp_sils" in targets:
+            python_cpp_status = compare_python_cpp_csv(
+                python_result_path,
+                cpp_result_path,
+            )
+        else:
             python_cpp_status = "SKIPPED"
 
         if "mini_hils" in targets:
-            if HILS_SUMMARY_PATH.exists():
-                hils_result_rel = str(HILS_SUMMARY_PATH.relative_to(BASE_DIR))
-
-            hils_status = lookup_hils_status(
-                hils_summary,
-                scenario_id,
-                scenario_name,
+            hils_status = hils_map.get(
+                normalize_scenario_id(scenario_id),
+                hils_map.get(scenario_name, "NOT_FOUND"),
             )
         else:
             hils_status = "SKIPPED"
 
-        required_statuses = [
+        overall = scenario_overall(
+            targets,
             python_status,
             cpp_status,
             python_cpp_status,
             hils_status,
-        ]
-
-        overall = (
-            "PASS"
-            if all(required_status_is_pass(status) for status in required_statuses)
-            else "FAIL"
         )
 
-        scenario_record = {
-            "id": scenario_id,
-            "scenario": scenario_name,
-            "description": scenario.get("description", ""),
-            "category": scenario.get("category", ""),
-            "version_id": version_id,
-            "targets": targets,
-            "python_sils": python_status,
-            "cpp_sils": cpp_status,
-            "python_cpp": python_cpp_status,
-            "mini_hils": hils_status,
-            "overall": overall,
-        }
+        scenario_records.append(
+            {
+                "id": scenario_id,
+                "scenario": scenario_name,
+                "description": scenario.get("description", ""),
+                "category": scenario.get("category", ""),
+                "version_id": version_id,
+                "targets": targets,
+                "python_sils": python_status,
+                "cpp_sils": cpp_status,
+                "python_cpp": python_cpp_status,
+                "mini_hils": hils_status,
+                "overall": overall,
+            }
+        )
 
-        scenario_results.append(scenario_record)
-
-        legacy_comparisons.append(
+        comparison_records.append(
             {
                 "scenario": scenario_name,
                 "version_id": version_id,
                 "comparison": python_cpp_status,
                 "python_cpp": python_cpp_status,
                 "hils": hils_status,
-                "python_result": python_result_rel,
-                "cpp_result": cpp_result_rel,
-                "hils_result": hils_result_rel,
+                "python_result": relative_path(python_result_path),
+                "cpp_result": relative_path(cpp_result_path),
+                "hils_result": (
+                    relative_path(HILS_SUMMARY_PATH)
+                    if "mini_hils" in targets and HILS_SUMMARY_PATH.exists()
+                    else None
+                ),
                 "overall": overall,
             }
         )
 
-    overall = (
-        "PASS"
-        if all(result["overall"] == "PASS" for result in scenario_results)
-        else "FAIL"
+    passed_scenarios = sum(
+        1
+        for record in scenario_records
+        if record["overall"] == "PASS"
     )
 
-    all_results_summary = {
-        "suite": suite["suite_name"],
+    failed_scenarios = len(scenario_records) - passed_scenarios
+
+    overall = "PASS" if failed_scenarios == 0 else "FAIL"
+
+    summary = {
+        "suite": scenario_suite["suite_name"],
         "overall": overall,
-        "total_scenarios": len(scenario_results),
-        "passed_scenarios": sum(
-            1 for result in scenario_results
-            if result["overall"] == "PASS"
-        ),
-        "failed_scenarios": sum(
-            1 for result in scenario_results
-            if result["overall"] != "PASS"
-        ),
-        "scenarios": scenario_results,
-        "comparisons": legacy_comparisons,
+        "total_scenarios": len(scenario_records),
+        "passed_scenarios": passed_scenarios,
+        "failed_scenarios": failed_scenarios,
+        "scenarios": scenario_records,
+        "comparisons": comparison_records,
     }
 
-    legacy_comparison_summary = {
+    ALL_RESULTS_OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    with ALL_RESULTS_OUTPUT_PATH.open("w", encoding="utf-8") as file:
+        json.dump(summary, file, indent=2)
+        file.write("\n")
+
+    comparison_summary = {
         "overall": overall,
-        "comparisons": legacy_comparisons,
+        "comparisons": comparison_records,
     }
 
-    ALL_RESULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    COMPARISON_DIR_PATH.parent.mkdir(parents=True, exist_ok=True)
+    COMPARISON_OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-    with ALL_RESULTS_PATH.open("w", encoding="utf-8") as file:
-        json.dump(all_results_summary, file, indent=2)
-        file.write("\n")
-
-    with LEGACY_COMPARISON_PATH.open("w", encoding="utf-8") as file:
-        json.dump(legacy_comparison_summary, file, indent=2)
-        file.write("\n")
-
-    with COMPARISON_DIR_PATH.open("w", encoding="utf-8") as file:
-        json.dump(legacy_comparison_summary, file, indent=2)
+    with COMPARISON_OUTPUT_PATH.open("w", encoding="utf-8") as file:
+        json.dump(comparison_summary, file, indent=2)
         file.write("\n")
 
     print("=" * 60)
     print("All Results Summary")
     print("=" * 60)
-    print(json.dumps(all_results_summary, indent=2))
-    print("")
-    print(f" output: {ALL_RESULTS_PATH}")
+    print(json.dumps(summary, indent=2))
+    print()
+    print(" output:", ALL_RESULTS_OUTPUT_PATH)
+    print(" output:", COMPARISON_OUTPUT_PATH)
+
+    if overall != "PASS":
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

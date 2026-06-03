@@ -79,30 +79,26 @@ def main():
             print(" python cmd  : SKIPPED")
 
         if "cpp_sils" in targets:
-            if version_id != "fan_control_v1":
-                print(
-                    " cpp command : NOT SUPPORTED for "
-                    f"version_id={version_id}"
-                )
+            cpp_command = [
+                "./build/run_scenario",
+                "--scenario",
+                str(scenario_path),
+                "--version-id",
+                version_id,
+            ]
+
+            print(" cpp command :", " ".join(cpp_command))
+
+            cpp_result = subprocess.run(
+                cpp_command,
+                cwd=BASE_DIR / "implementations" / "cpp_sils",
+            )
+
+            print(" cpp rc      :", cpp_result.returncode)
+
+            if cpp_result.returncode != 0:
                 scenario_pass = False
-            else:
-                cpp_command = [
-                    "./build/run_scenario",
-                    "--scenario",
-                    str(scenario_path),
-                ]
 
-                print(" cpp command :", " ".join(cpp_command))
-
-                cpp_result = subprocess.run(
-                    cpp_command,
-                    cwd=BASE_DIR / "implementations" / "cpp_sils",
-                )
-
-                print(" cpp rc      :", cpp_result.returncode)
-
-                if cpp_result.returncode != 0:
-                    scenario_pass = False
         else:
             print(" cpp command : SKIPPED")
 

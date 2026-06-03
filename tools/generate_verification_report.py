@@ -101,10 +101,10 @@ def main() -> None:
         "- `SKIPPED` means the scenario did not target that execution environment."
     )
     lines.append(
-        "- SC_05 is currently a Python SILS-only fan_control_v2 validation scenario."
+        "- SC_05 is a fan_control_v2 validation scenario executed by Python SILS and C++ SILS."
     )
     lines.append(
-        "- C++ SILS fan_control_v2 support is deferred until version-aware C++ execution is implemented."
+        "- C++ SILS fan_control_v2 support is implemented via version-aware C++ scenario execution."
     )
     lines.append("")
 

@@ -4,6 +4,13 @@ import json
 from pathlib import Path
 from typing import Any
 
+try:
+    import yaml
+except ImportError as exc:
+    raise SystemExit(
+        "PyYAML is required. Activate the project virtual environment first."
+    ) from exc
+
 
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as file:
@@ -14,6 +21,11 @@ def load_json_if_exists(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}
     return load_json(path)
+
+
+def load_yaml(path: Path) -> dict[str, Any]:
+    with path.open("r", encoding="utf-8") as file:
+        return yaml.safe_load(file)
 
 
 def normalize_scenario_id(value: str) -> str:
@@ -54,6 +66,29 @@ def build_scenario_metadata(
 
         if not scenario_name or not scenario_id:
             continue
+
+        metadata[scenario_name] = {
+            "scenario_id": normalize_scenario_id(scenario_id),
+            "version_id": scenario.get("version_id", "UNKNOWN"),
+            "targets": scenario.get("targets", []),
+        }
+
+    return metadata
+
+
+def build_suite_metadata(
+    scenario_suite: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    metadata: dict[str, dict[str, Any]] = {}
+
+    for scenario in scenario_suite.get("scenarios", []):
+        scenario_id = scenario.get("id")
+        scenario_file = scenario.get("file")
+
+        if not scenario_id or not scenario_file:
+            continue
+
+        scenario_name = Path(scenario_file).stem
 
         metadata[scenario_name] = {
             "scenario_id": normalize_scenario_id(scenario_id),
@@ -128,8 +163,17 @@ def main() -> None:
         repo_root / "traceability" / "scenario_traceability.json"
     )
 
+    scenario_suite = load_yaml(
+        repo_root / "common" / "scenario" / "scenario_suite.yaml"
+    )
+
     traceability_map = build_traceability_map(traceability)
+
     scenario_metadata = build_scenario_metadata(all_results_summary)
+    scenario_metadata.update(
+        build_suite_metadata(scenario_suite)
+    )
+
     hils_map = build_hils_map(hils_summary)
 
     evidence_entries = []

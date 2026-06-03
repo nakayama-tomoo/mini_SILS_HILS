@@ -114,9 +114,23 @@
       "result": "PASS"
     },
     {
+      "requirement_id": "REQ-FAN-001",
+      "version_id": "fan_control_v2",
+      "environment": "CPP_SILS",
+      "scenario_id": "SC_05",
+      "result": "PASS"
+    },
+    {
       "requirement_id": "REQ-FAN-002",
       "version_id": "fan_control_v2",
       "environment": "PYTHON_SILS",
+      "scenario_id": "SC_05",
+      "result": "PASS"
+    },
+    {
+      "requirement_id": "REQ-FAN-002",
+      "version_id": "fan_control_v2",
+      "environment": "CPP_SILS",
       "scenario_id": "SC_05",
       "result": "PASS"
     }
