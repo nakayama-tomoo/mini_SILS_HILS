@@ -11,6 +11,7 @@ COMMANDS = [
     ["python", "tools/check_coverage.py"],
     ["python", "tools/generate_version_matrix.py"],
     ["python", "tools/run_v2_validation.py"],
+    ["python", "tools/validate_traceability_consistency.py"],
 ]
 
 
