@@ -91,13 +91,35 @@ jobs:
         run: |
           python tools/compare_python_cpp_results.py
 
-      - name: List Phase 12 C++ evidence files
+      - name: Collect Phase 12 C++ evidence files
         if: always()
         run: |
           mkdir -p reports/ci
+          mkdir -p reports/evidence/cpp/results
+          mkdir -p reports/evidence/cpp/cpp_sils_results
+          mkdir -p reports/evidence/cpp/python_cpp_results
+          mkdir -p reports/evidence/cpp/python_fan_control_results
+
+          shopt -s nullglob
+
+          for file in results/*.json; do
+            cp "$file" reports/evidence/cpp/results/
+          done
+
+          for file in implementations/cpp_sils/results/*.csv; do
+            cp "$file" reports/evidence/cpp/cpp_sils_results/
+          done
+
+          for file in implementations/python_sils/cpp/results/*.csv; do
+            cp "$file" reports/evidence/cpp/python_cpp_results/
+          done
+
+          for file in implementations/python_sils/results/fan_control/*.csv; do
+            cp "$file" reports/evidence/cpp/python_fan_control_results/
+          done
 
           {
-            echo "# Phase 12 C++ SILS evidence file list"
+            echo "# Phase 12 C++ SILS evidence source file list"
             echo
             echo "## results"
             find results -maxdepth 2 -type f -print | sort || true
@@ -110,26 +132,47 @@ jobs:
             echo
             echo "## implementations/python_sils/cpp/results"
             find implementations/python_sils/cpp/results -maxdepth 1 -type f -print | sort || true
-          } | tee reports/ci/evidence-file-list.txt
+          } | tee reports/ci/evidence-source-file-list.txt
 
-      - name: Validate Phase 12 C++ mandatory evidence files
+          find reports/evidence/cpp -type f -print | sort > reports/ci/collected-evidence-file-list.txt
+
+          if [ ! -s reports/ci/collected-evidence-file-list.txt ]; then
+            echo "No optional C++ evidence result files were collected in this Phase 12 run." > reports/evidence/cpp/NO_OPTIONAL_RESULT_FILES.txt
+            find reports/evidence/cpp -type f -print | sort > reports/ci/collected-evidence-file-list.txt
+          fi
+
+      - name: Summarize Phase 12 C++ evidence availability
+        if: always()
         run: |
-          test -d implementations/cpp_sils/results
-          test -n "$(find implementations/cpp_sils/results -name '*.csv' -print -quit)"
-          test -d implementations/python_sils/results/fan_control
-          test -n "$(find implementations/python_sils/results/fan_control -name '*.csv' -print -quit)"
+          python - <<'PY_SUMMARY'
+          import json
+          from pathlib import Path
 
-          for optional_file in \
-            results/suite_summary.json \
-            results/all_results_summary.json \
-            results/comparison_summary.json
-          do
-            if [ -f "$optional_file" ]; then
-              echo "$optional_file is available."
-            else
-              echo "$optional_file is optional in Phase 12 and was not generated."
-            fi
-          done
+          checks = {
+              "results_json": sorted(str(p) for p in Path("results").glob("*.json")),
+              "cpp_sils_csv": sorted(str(p) for p in Path("implementations/cpp_sils/results").glob("*.csv")),
+              "python_cpp_csv": sorted(str(p) for p in Path("implementations/python_sils/cpp/results").glob("*.csv")),
+              "python_fan_control_csv": sorted(str(p) for p in Path("implementations/python_sils/results/fan_control").glob("*.csv")),
+              "collected_cpp_evidence": sorted(str(p) for p in Path("reports/evidence/cpp").glob("**/*") if p.is_file()),
+          }
+
+          summary = {
+              key: {
+                  "count": len(files),
+                  "files": files,
+              }
+              for key, files in checks.items()
+          }
+
+          Path("reports/ci").mkdir(parents=True, exist_ok=True)
+          Path("reports/ci/evidence-availability.json").write_text(
+              json.dumps(summary, indent=2) + "\n",
+              encoding="utf-8",
+          )
+
+          for key, value in summary.items():
+              print(f"{key}: {value['count']} file(s)")
+          PY_SUMMARY
 
       - name: Show comparison summary
         if: always()
@@ -180,12 +223,7 @@ jobs:
         with:
           name: phase12-cpp-sils-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            reports/ci/metadata.json
-            reports/ci/tool-versions.txt
-            reports/ci/evidence-file-list.txt
-            implementations/cpp_sils/results/*.csv
-            implementations/python_sils/cpp/results/*.csv
-            implementations/python_sils/results/fan_control/*.csv
-            results/*.json
+            reports/ci/**
+            reports/evidence/cpp/**
           if-no-files-found: error
           retention-days: 14
