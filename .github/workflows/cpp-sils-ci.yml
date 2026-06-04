@@ -6,6 +6,7 @@ on:
       - main
       - restructure/vmodel-lifecycle
       - phase11-ci-cpp-build-test
+      - phase12-ci-evidence-static-analysis-prep
     paths:
       - ".github/workflows/cpp-sils-ci.yml"
       - "implementations/cpp_sils/**"
@@ -90,22 +91,72 @@ jobs:
         run: |
           python tools/compare_python_cpp_results.py
 
+      - name: Validate Phase 12 C++ evidence files
+        run: |
+          test -f results/comparison_summary.json
+          test -f results/suite_summary.json
+          test -f results/all_results_summary.json
+          test -d implementations/cpp_sils/results
+          test -n "$(find implementations/cpp_sils/results -name '*.csv' -print -quit)"
+          test -d implementations/python_sils/results/fan_control
+          test -n "$(find implementations/python_sils/results/fan_control -name '*.csv' -print -quit)"
+
       - name: Show comparison summary
         if: always()
         run: |
-          python -m json.tool results/comparison_summary.json
+          if [ -f results/comparison_summary.json ]; then
+            python -m json.tool results/comparison_summary.json
+          else
+            echo "results/comparison_summary.json is not available."
+          fi
 
-      - name: Upload Phase 11 C++ SILS evidence
+      - name: Prepare Phase 12 C++ SILS evidence metadata
+        if: always()
+        run: |
+          mkdir -p reports/ci
+
+          cat > reports/ci/metadata.json <<EOF
+          {
+            "phase": "Phase 12",
+            "workflow": "${{ github.workflow }}",
+            "job": "cpp-sils-build-test",
+            "commit_sha": "${{ github.sha }}",
+            "ref_name": "${{ github.ref_name }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "scenario_suite": "SC_01_to_SC_05"
+          }
+          EOF
+
+          {
+            echo "python_version=$(python --version 2>&1 || true)"
+
+            if command -v cmake >/dev/null 2>&1; then
+              echo "cmake_version=$(cmake --version | head -n 1)"
+            else
+              echo "cmake_version=not_available"
+            fi
+
+            if command -v g++ >/dev/null 2>&1; then
+              echo "gxx_version=$(g++ --version | head -n 1)"
+            else
+              echo "gxx_version=not_available"
+            fi
+          } > reports/ci/tool-versions.txt
+
+      - name: Upload Phase 12 C++ SILS evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: phase11-cpp-sils-evidence
+          name: phase12-cpp-sils-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
+            reports/ci/metadata.json
+            reports/ci/tool-versions.txt
             implementations/cpp_sils/results/*.csv
             implementations/python_sils/cpp/results/*.csv
             implementations/python_sils/results/fan_control/*.csv
             results/comparison_summary.json
             results/suite_summary.json
             results/all_results_summary.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
