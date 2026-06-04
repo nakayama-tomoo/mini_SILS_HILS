@@ -7,10 +7,10 @@
 | Phase | Phase 12 |
 | Theme | CI evidence organization and static analysis preparation |
 | Branch | `phase12-ci-evidence-static-analysis-prep` |
-| Final commit | `<to be filled>` |
+| Final CI green commit | `595fc2d0da748fb4f3e611ac839ebd4b43b6d4c7` |
 | Final tag | `checkpoint-after-phase12-ci-evidence-static-analysis-prep-20260604` |
-| Final CI result | `<to be filled: passed / failed>` |
-| Final CI run URL | `<to be filled>` |
+| Final CI result | `passed` |
+| Final CI run URL | Recorded in `Phase 12 CI execution result` section below. |
 
 ## Evidence target
 
@@ -26,19 +26,19 @@ Phase 12 checks the following:
 
 | Workflow | Expected result | Artifact name | Notes |
 |---|---|---|---|
-| `python-test.yml` | `<to be filled>` | `phase12-python-test-evidence-<run_id>-<run_attempt>` | Python SILS reference behavior |
-| `cpp-sils-ci.yml` | `<to be filled>` | `phase12-cpp-sils-ci-evidence-<run_id>-<run_attempt>` | C++ build, CTest, scenario execution |
-| `cpp-sils-ci.yml` comparison step | `<to be filled>` | `phase12-python-cpp-comparison-evidence-<run_id>-<run_attempt>` | Python/C++ behavior comparison |
+| `python-test.yml` | `passed` | `phase12-python-sils-evidence-${{ github.run_id }}-${{ github.run_attempt }}` | Python SILS pytest, governance, Docker execution, and Python-side evidence |
+| `cpp-sils-ci.yml` | `passed` | `phase12-cpp-sils-evidence-${{ github.run_id }}-${{ github.run_attempt }}` | C++ build, CTest, scenario execution, Python/C++ comparison, and C++-side evidence |
+| `cpp-sils-ci.yml` comparison step | `passed` | Included in `phase12-cpp-sils-evidence-${{ github.run_id }}-${{ github.run_attempt }}` | Python/C++ behavior comparison |
 
 ## Scenario evidence
 
 | Scenario | Python result | C++ result | Comparison result | Notes |
 |---|---|---|---|---|
-| SC_01 | `<to be filled>` | `<to be filled>` | `<to be filled>` |  |
-| SC_02 | `<to be filled>` | `<to be filled>` | `<to be filled>` |  |
-| SC_03 | `<to be filled>` | `<to be filled>` | `<to be filled>` |  |
-| SC_04 | `<to be filled>` | `<to be filled>` | `<to be filled>` |  |
-| SC_05 | `<to be filled>` | `<to be filled>` | `<to be filled>` |  |
+| SC_01 | `passed` | `passed` | `matched` | Verified by C++ SILS CI suite and Python/C++ comparison |
+| SC_02 | `passed` | `passed` | `matched` | Verified by C++ SILS CI suite and Python/C++ comparison |
+| SC_03 | `passed` | `passed` | `matched` | Verified by C++ SILS CI suite and Python/C++ comparison |
+| SC_04 | `passed` | `passed` | `matched` | Verified by C++ SILS CI suite and Python/C++ comparison |
+| SC_05 | `passed` | `passed` | `matched` | Verified by C++ SILS CI suite and Python/C++ comparison |
 
 ## Static analysis preparation result
 
@@ -57,15 +57,15 @@ Branch: phase12-ci-evidence-static-analysis-prep
 
 Final CI commit:
 - short hash: 595fc2d
-- full hash: <git rev-parse HEAD の結果>
+- full hash: 595fc2d0da748fb4f3e611ac839ebd4b43b6d4c7
 
 GitHub Actions results:
 - Python side workflow: passed
-  - run URL: <Python側workflowのURL>
-  - artifact: phase12-python-sils-evidence-<run_id>-<run_attempt>
+  - run URL: https://github.com/nakayama-tomoo/mini_SILS_HILS/actions/runs/26946503960
+  - artifact: phase12-python-sils-evidence-26946503960-1
 - C++ SILS CI: passed
-  - run URL: <C++ SILS CIのURL>
-  - artifact: phase12-cpp-sils-evidence-<run_id>-<run_attempt>
+  - run URL: https://github.com/nakayama-tomoo/mini_SILS_HILS/actions/runs/26944534742
+  - artifact: phase12-cpp-sils-evidence-26944534742-1
 
 Phase 12 evidence policy confirmed:
 - Python SILS CI is responsible for Python pytest, governance checks, Docker execution, and Python-side evidence.
