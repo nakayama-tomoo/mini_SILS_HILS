@@ -49,8 +49,27 @@ Phase 12 checks the following:
 
 ## Final judgement
 
-`<to be filled>`
+## Phase 12 CI execution result
 
-Example:
+Status: Passed
 
-Phase 12 is complete when both existing CI workflows are green, expected evidence artifacts are uploaded, and the static analysis introduction plan is documented without enabling blocking quality gates.
+Branch: phase12-ci-evidence-static-analysis-prep
+
+Final CI commit:
+- short hash: 595fc2d
+- full hash: <git rev-parse HEAD の結果>
+
+GitHub Actions results:
+- Python side workflow: passed
+  - run URL: <Python側workflowのURL>
+  - artifact: phase12-python-sils-evidence-<run_id>-<run_attempt>
+- C++ SILS CI: passed
+  - run URL: <C++ SILS CIのURL>
+  - artifact: phase12-cpp-sils-evidence-<run_id>-<run_attempt>
+
+Phase 12 evidence policy confirmed:
+- Python SILS CI is responsible for Python pytest, governance checks, Docker execution, and Python-side evidence.
+- C++ SILS CI is responsible for C++ build, CTest, suite execution, Python/C++ comparison, and C++-side evidence.
+- C++ generated CSV/JSON evidence files are collected when available, but missing optional result files do not fail the CI.
+- Functional quality gates remain CMake build, CTest, suite execution, and Python/C++ comparison.
+- Static analysis tools are not introduced as CI gates in Phase 12.
