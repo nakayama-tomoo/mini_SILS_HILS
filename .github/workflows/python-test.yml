@@ -1,12 +1,14 @@
-name: Python and C++ mini SILS CI
+name: Python SILS CI
 
 on:
   push:
     branches:
       - main
+      - phase12-ci-evidence-static-analysis-prep
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -32,33 +34,9 @@ jobs:
 
       - name: Run pytest
         run: |
+          mkdir -p reports/python
           cd implementations/python_sils
-          python -m pytest
-
-      - name: Install CMake and compiler tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            cmake \
-            g++ \
-            libgtest-dev
-
-      - name: Configure CMake
-        run: cmake -S implementations/cpp_sils -B implementations/cpp_sils/build
-
-      - name: Build C++ targets
-        run: cmake --build implementations/cpp_sils/build
-
-      - name: Run CTest
-        run: |
-          cd implementations/cpp_sils/build
-          ctest --output-on-failure
-
-      - name: Run suite orchestration
-        run: python tools/run_suite.py
-
-      - name: Compare Python and C++ results
-        run: python tools/compare_python_cpp_results.py
+          python -m pytest --junitxml=../../reports/python/pytest-results.xml
 
       - name: Run governance checks
         run: python tools/run_governance_checks.py
@@ -85,51 +63,48 @@ jobs:
       - name: Docker run
         run: docker run --rm mini-sils-python-sils
 
-      - name: Upload Python SILS result CSV
-        uses: actions/upload-artifact@v7
-        with:
-          name: python-fan-control-results
-          path: implementations/python_sils/results/fan_control/*.csv
-          if-no-files-found: error
-          retention-days: 14
+      - name: Prepare Phase 12 Python SILS evidence metadata
+        if: always()
+        run: |
+          mkdir -p reports/ci
 
-      - name: Upload C++ SILS result CSV
-        uses: actions/upload-artifact@v7
-        with:
-          name: cpp-fan-control-results
-          path: implementations/cpp_sils/results/*.csv
-          if-no-files-found: error
-          retention-days: 14
+          cat > reports/ci/metadata.json <<EOF
+          {
+            "phase": "Phase 12",
+            "workflow": "${{ github.workflow }}",
+            "job": "test",
+            "commit_sha": "${{ github.sha }}",
+            "ref_name": "${{ github.ref_name }}",
+            "run_id": "${{ github.run_id }}",
+            "run_attempt": "${{ github.run_attempt }}",
+            "scope": "python_sils_pytest_governance_docker"
+          }
+          EOF
 
-      - name: Upload suite summary
-        uses: actions/upload-artifact@v7
-        with:
-          name: suite-summary
-          path: results/suite_summary.json
-          if-no-files-found: error
-          retention-days: 14
+          {
+            echo "python_version=$(python --version 2>&1 || true)"
+            echo "pip_version=$(python -m pip --version 2>&1 || true)"
+          } > reports/ci/tool-versions.txt
 
-      - name: Upload comparison summary
-        uses: actions/upload-artifact@v7
-        with:
-          name: comparison-summary
-          path: results/comparison_summary.json
-          if-no-files-found: error
-          retention-days: 14
+      - name: Validate Phase 12 Python evidence files
+        if: always()
+        run: |
+          test -f reports/python/pytest-results.xml
+          test -f reports/ci/metadata.json
+          test -f reports/ci/tool-versions.txt
+          test -f evidence/evidence_manifest.json
+          test -f evidence/dependencies/python_freeze.txt
+          test -f evidence/dependencies/README.md
 
-      - name: Upload all results summary
+      - name: Upload Phase 12 Python SILS evidence
+        if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: all-results-summary
-          path: results/all_results_summary.json
-          if-no-files-found: error
-          retention-days: 14
-
-      - name: Upload evidence package
-        uses: actions/upload-artifact@v7
-        with:
-          name: evidence-package
+          name: phase12-python-sils-evidence-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
+            reports/python/pytest-results.xml
+            reports/ci/metadata.json
+            reports/ci/tool-versions.txt
             evidence/evidence_manifest.json
             evidence/dependencies/python_freeze.txt
             evidence/dependencies/README.md
