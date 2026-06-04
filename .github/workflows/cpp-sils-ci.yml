@@ -94,24 +94,42 @@ jobs:
       - name: List Phase 12 C++ evidence files
         if: always()
         run: |
-          find results -maxdepth 2 -type f -print | sort || true
-          find implementations/cpp_sils/results -maxdepth 1 -type f -print | sort || true
-          find implementations/python_sils/results/fan_control -maxdepth 1 -type f -print | sort || true
+          mkdir -p reports/ci
+
+          {
+            echo "# Phase 12 C++ SILS evidence file list"
+            echo
+            echo "## results"
+            find results -maxdepth 2 -type f -print | sort || true
+            echo
+            echo "## implementations/cpp_sils/results"
+            find implementations/cpp_sils/results -maxdepth 1 -type f -print | sort || true
+            echo
+            echo "## implementations/python_sils/results/fan_control"
+            find implementations/python_sils/results/fan_control -maxdepth 1 -type f -print | sort || true
+            echo
+            echo "## implementations/python_sils/cpp/results"
+            find implementations/python_sils/cpp/results -maxdepth 1 -type f -print | sort || true
+          } | tee reports/ci/evidence-file-list.txt
 
       - name: Validate Phase 12 C++ mandatory evidence files
         run: |
-          test -f results/suite_summary.json
-          test -f results/all_results_summary.json
           test -d implementations/cpp_sils/results
           test -n "$(find implementations/cpp_sils/results -name '*.csv' -print -quit)"
           test -d implementations/python_sils/results/fan_control
           test -n "$(find implementations/python_sils/results/fan_control -name '*.csv' -print -quit)"
 
-          if [ -f results/comparison_summary.json ]; then
-            echo "results/comparison_summary.json is available."
-          else
-            echo "results/comparison_summary.json is not generated in this workflow; treating it as optional for Phase 12 evidence packaging."
-          fi
+          for optional_file in \
+            results/suite_summary.json \
+            results/all_results_summary.json \
+            results/comparison_summary.json
+          do
+            if [ -f "$optional_file" ]; then
+              echo "$optional_file is available."
+            else
+              echo "$optional_file is optional in Phase 12 and was not generated."
+            fi
+          done
 
       - name: Show comparison summary
         if: always()
@@ -164,6 +182,7 @@ jobs:
           path: |
             reports/ci/metadata.json
             reports/ci/tool-versions.txt
+            reports/ci/evidence-file-list.txt
             implementations/cpp_sils/results/*.csv
             implementations/python_sils/cpp/results/*.csv
             implementations/python_sils/results/fan_control/*.csv
