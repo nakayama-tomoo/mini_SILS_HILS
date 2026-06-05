@@ -258,3 +258,69 @@ jobs:
           path: reports/static-analysis/cppcheck/
           if-no-files-found: error
           retention-days: 30
+
+  phase14-baseline-evidence:
+    name: Phase 14 baseline evidence
+    runs-on: ubuntu-latest
+    needs: [ruff-report, cppcheck-report]
+    if: always()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Create Phase 14 static analysis baseline evidence
+        shell: bash
+        run: |
+          mkdir -p evidence/phase14
+
+          BASELINE_CSV="docs/sqa/static-analysis/phase14_static_analysis_baseline.csv"
+          BASELINE_DOC="docs/sqa/static-analysis/phase14_static_analysis_baseline.md"
+          ARTIFACT_NAME="phase14-static-analysis-baseline"
+          RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+          RUFF_BASELINE_COUNT=$(grep -c '^PH14-RUFF-' "$BASELINE_CSV" || true)
+          CPPCHECK_BASELINE_COUNT=$(grep -c '^PH14-CPPCHECK-' "$BASELINE_CSV" || true)
+          TBD_COUNT=$(grep -c 'TBD' "$BASELINE_CSV" || true)
+
+          cat > evidence/phase14/phase14_static_analysis_baseline_index.md <<EOF_INDEX
+          # Phase 14 Static Analysis Baseline Evidence Index
+
+          | Item | Value |
+          |---|---|
+          | Phase | Phase 14 |
+          | Theme | Mini SILS ④-F 静的解析baseline整理 |
+          | Run URL | ${RUN_URL} |
+          | Artifact name | ${ARTIFACT_NAME} |
+          | Ruff baseline findings | ${RUFF_BASELINE_COUNT} |
+          | Cppcheck baseline findings | ${CPPCHECK_BASELINE_COUNT} |
+          | TBD count | ${TBD_COUNT} |
+          | Gate status | Not gated |
+          | Baseline CSV | ${BASELINE_CSV} |
+          | Baseline document | ${BASELINE_DOC} |
+          EOF_INDEX
+
+          {
+            echo "## Phase 14 Static Analysis Baseline"
+            echo ""
+            echo "| Item | Value |"
+            echo "|---|---|"
+            echo "| Run URL | ${RUN_URL} |"
+            echo "| Artifact name | ${ARTIFACT_NAME} |"
+            echo "| Ruff baseline findings | ${RUFF_BASELINE_COUNT} |"
+            echo "| Cppcheck baseline findings | ${CPPCHECK_BASELINE_COUNT} |"
+            echo "| TBD count | ${TBD_COUNT} |"
+            echo "| Gate status | Not gated |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload Phase 14 static analysis baseline evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: phase14-static-analysis-baseline
+          path: |
+            docs/sqa/static-analysis/phase14_static_analysis_baseline.md
+            docs/sqa/static-analysis/phase14_static_analysis_baseline.csv
+            evidence/phase14/phase14_static_analysis_baseline_index.md
+          if-no-files-found: error
+          retention-days: 30
