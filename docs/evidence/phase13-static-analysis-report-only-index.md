@@ -42,18 +42,19 @@ The purpose is to collect static analysis results as CI evidence without enablin
 
 | Item | Value |
 |---|---|
-| Date | TBD |
-| Branch | TBD |
-| Commit SHA | TBD |
-| Workflow run URL | TBD |
-| Trigger | TBD |
+| Date | 2026-06-05 |
+| Branch | phase13/static-analysis-report-only |
+| Commit SHA | 43a723d |
+| Workflow run URL | https://github.com/nakayama-tomoo/mini_SILS_HILS/actions/runs/27010591125 |
+| Trigger | pull_request |
+| Status | Success |
 
 ## Artifacts
 
 | Tool | Artifact name | Main files | Result summary |
 |---|---|---|---|
-| Ruff | `phase13-ruff-static-analysis-report` | `ruff.json`, `ruff-github.txt`, `ruff-summary.md`, `ruff-version.txt` | TBD |
-| Cppcheck | `phase13-cppcheck-static-analysis-report` | `cppcheck.xml`, `cppcheck.txt`, `cppcheck-summary.md`, `cppcheck-version.txt` | TBD |
+| Ruff | `phase13-ruff-static-analysis-report` | `ruff.json`, `ruff-github.txt`, `ruff-summary.md`, `ruff-version.txt`, `ruff-natural-exit-code.txt`, `ruff-report-only-exit-code.txt` | Report generated. Findings: 4. Natural exit code: 1. Report-only exit code: 0. Gate disabled. |
+| Cppcheck | `phase13-cppcheck-static-analysis-report` | `cppcheck.xml`, `cppcheck.txt`, `cppcheck-summary.md`, `cppcheck-version.txt`, `cppcheck-targets.txt`, `cppcheck-xml-exit-code.txt`, `cppcheck-text-exit-code.txt` | Report generated. Findings: 6. Severity: style 6. XML/Text exit code: 0. Gate disabled. |
 
 ## Gate status
 
