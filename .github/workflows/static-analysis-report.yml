@@ -1,0 +1,260 @@
+name: Static Analysis Report Only
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ruff-report:
+    name: Ruff report-only
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install Ruff
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ruff
+
+      - name: Run Ruff report-only
+        shell: bash
+        run: |
+          mkdir -p reports/static-analysis/ruff
+
+          python -m ruff --version | tee reports/static-analysis/ruff/ruff-version.txt
+
+          set +e
+
+          python -m ruff check . \
+            --output-format=json \
+            > reports/static-analysis/ruff/ruff.json \
+            2> reports/static-analysis/ruff/ruff-json-stderr.txt
+          ruff_natural_status=$?
+
+          python -m ruff check . \
+            --output-format=github \
+            --exit-zero \
+            > reports/static-analysis/ruff/ruff-github.txt \
+            2> reports/static-analysis/ruff/ruff-github-stderr.txt
+          ruff_report_status=$?
+
+          set -e
+
+          echo "${ruff_natural_status}" > reports/static-analysis/ruff/ruff-natural-exit-code.txt
+          echo "${ruff_report_status}" > reports/static-analysis/ruff/ruff-report-only-exit-code.txt
+
+          python - <<'PY'
+          import json
+          import pathlib
+
+          base = pathlib.Path("reports/static-analysis/ruff")
+          json_path = base / "ruff.json"
+
+          findings = []
+          note = ""
+
+          try:
+              text = json_path.read_text(encoding="utf-8").strip()
+              findings = json.loads(text) if text else []
+          except Exception as exc:
+              note = f"Ruff JSON summary unavailable: {exc}"
+
+          natural_exit = (base / "ruff-natural-exit-code.txt").read_text(encoding="utf-8").strip()
+          report_exit = (base / "ruff-report-only-exit-code.txt").read_text(encoding="utf-8").strip()
+
+          lines = [
+              "### Ruff report-only",
+              "",
+              f"- Findings: {len(findings)}",
+              f"- Natural exit code: {natural_exit}",
+              f"- Report-only exit code: {report_exit}",
+              "- Gate: disabled",
+              "- Auto-fix: disabled",
+              "",
+              "Main files:",
+              "- ruff.json",
+              "- ruff-github.txt",
+              "- ruff-version.txt",
+              "- ruff-natural-exit-code.txt",
+              "- ruff-report-only-exit-code.txt",
+          ]
+
+          if note:
+              lines.extend(["", f"Note: {note}"])
+
+          summary = "\n".join(lines) + "\n"
+          (base / "ruff-summary.md").write_text(summary, encoding="utf-8")
+          print(summary)
+          PY
+
+          cat reports/static-analysis/ruff/ruff-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          exit 0
+
+      - name: Upload Ruff report artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: phase13-ruff-static-analysis-report
+          path: reports/static-analysis/ruff/
+          if-no-files-found: error
+          retention-days: 30
+
+  cppcheck-report:
+    name: Cppcheck report-only
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Cppcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck
+
+      - name: Run Cppcheck report-only
+        shell: bash
+        run: |
+          mkdir -p reports/static-analysis/cppcheck
+
+          cppcheck --version | tee reports/static-analysis/cppcheck/cppcheck-version.txt
+
+          mapfile -d '' cpp_files < <(
+            find . \
+              -type f \
+              \( -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.cxx' -o -name '*.h' -o -name '*.hpp' -o -name '*.hh' \) \
+              -not -path './.git/*' \
+              -not -path './.venv/*' \
+              -not -path './venv/*' \
+              -not -path './build/*' \
+              -not -path './dist/*' \
+              -not -path './__pycache__/*' \
+              -print0
+          )
+
+          printf '%s\n' "${cpp_files[@]}" > reports/static-analysis/cppcheck/cppcheck-targets.txt
+
+          if [ "${#cpp_files[@]}" -eq 0 ]; then
+            echo "No C/C++ source files found." | tee reports/static-analysis/cppcheck/cppcheck.txt
+            cat > reports/static-analysis/cppcheck/cppcheck.xml <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <results version="2">
+            <cppcheck version="not-run"/>
+            <errors>
+            </errors>
+          </results>
+          EOF
+            echo "0" > reports/static-analysis/cppcheck/cppcheck-xml-exit-code.txt
+            echo "0" > reports/static-analysis/cppcheck/cppcheck-text-exit-code.txt
+          else
+            set +e
+
+            cppcheck \
+              --enable=warning,style,performance,portability \
+              --inline-suppr \
+              --suppress=missingIncludeSystem \
+              --xml \
+              --xml-version=2 \
+              "${cpp_files[@]}" \
+              2> reports/static-analysis/cppcheck/cppcheck.xml
+            cppcheck_xml_status=$?
+
+            cppcheck \
+              --enable=warning,style,performance,portability \
+              --inline-suppr \
+              --suppress=missingIncludeSystem \
+              "${cpp_files[@]}" \
+              > reports/static-analysis/cppcheck/cppcheck-stdout.txt \
+              2> reports/static-analysis/cppcheck/cppcheck.txt
+            cppcheck_text_status=$?
+
+            set -e
+
+            echo "${cppcheck_xml_status}" > reports/static-analysis/cppcheck/cppcheck-xml-exit-code.txt
+            echo "${cppcheck_text_status}" > reports/static-analysis/cppcheck/cppcheck-text-exit-code.txt
+          fi
+
+          python - <<'PY'
+          import pathlib
+          import xml.etree.ElementTree as ET
+
+          base = pathlib.Path("reports/static-analysis/cppcheck")
+          xml_path = base / "cppcheck.xml"
+
+          count = 0
+          by_severity = {}
+          note = ""
+
+          try:
+              root = ET.parse(xml_path).getroot()
+              errors = root.find("errors")
+              if errors is not None:
+                  for error in errors.findall("error"):
+                      count += 1
+                      severity = error.attrib.get("severity", "unknown")
+                      by_severity[severity] = by_severity.get(severity, 0) + 1
+          except Exception as exc:
+              note = f"Cppcheck XML summary unavailable: {exc}"
+
+          xml_exit = (base / "cppcheck-xml-exit-code.txt").read_text(encoding="utf-8").strip()
+          text_exit = (base / "cppcheck-text-exit-code.txt").read_text(encoding="utf-8").strip()
+
+          lines = [
+              "### Cppcheck report-only",
+              "",
+              f"- Findings: {count}",
+              f"- XML command exit code: {xml_exit}",
+              f"- Text command exit code: {text_exit}",
+              "- Gate: disabled",
+              "- Auto-fix: not applicable",
+          ]
+
+          if by_severity:
+              lines.extend(["", "Findings by severity:"])
+              for severity in sorted(by_severity):
+                  lines.append(f"- {severity}: {by_severity[severity]}")
+
+          lines.extend([
+              "",
+              "Main files:",
+              "- cppcheck.xml",
+              "- cppcheck.txt",
+              "- cppcheck-version.txt",
+              "- cppcheck-targets.txt",
+              "- cppcheck-xml-exit-code.txt",
+              "- cppcheck-text-exit-code.txt",
+          ])
+
+          if note:
+              lines.extend(["", f"Note: {note}"])
+
+          summary = "\n".join(lines) + "\n"
+          (base / "cppcheck-summary.md").write_text(summary, encoding="utf-8")
+          print(summary)
+          PY
+
+          cat reports/static-analysis/cppcheck/cppcheck-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+          exit 0
+
+      - name: Upload Cppcheck report artifact
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: phase13-cppcheck-static-analysis-report
+          path: reports/static-analysis/cppcheck/
+          if-no-files-found: error
+          retention-days: 30
