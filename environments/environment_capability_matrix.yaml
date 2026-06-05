@@ -1,0 +1,38 @@
+capability_matrix_id: environment_capability_matrix_v1
+
+environments:
+  python_sils:
+    type: SILS
+    supports:
+      - logic_validation
+      - batch_regression
+      - version_comparison
+      - python_cpp_equivalence_check
+    unsupported:
+      - real_io_timing
+      - physical_bus
+      - physical_sensor_noise
+
+  cpp_sils:
+    type: SILS
+    supports:
+      - logic_validation
+      - batch_regression
+      - implementation_equivalence
+    unsupported:
+      - real_io_timing
+      - physical_bus
+      - physical_sensor_noise
+
+  mini_hils:
+    type: HILS
+    implementation: arduino_hils
+    supports:
+      - real_controller_execution
+      - uart_io_validation
+      - basic_timing_observation
+      - hardware_in_loop
+    unsupported:
+      - large_scale_batch_regression
+      - actual_vehicle_dynamics
+      - safety_critical_physical_load

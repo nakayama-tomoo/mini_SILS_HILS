@@ -18,7 +18,7 @@ def compare_csv(
 
     if len(python_rows) != len(cpp_rows):
         print("")
-        print(f"Row count mismatch:")
+        print("Row count mismatch:")
         print(f"  Python: {python_csv}")
         print(f"  C++   : {cpp_csv}")
         return False, 1

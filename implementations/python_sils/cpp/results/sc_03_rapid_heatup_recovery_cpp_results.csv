@@ -1,0 +1,6 @@
+time_s,coolant_temp_c,expected_fan_state,actual_fan_state,match,version_id
+0,106,HIGH,HIGH,PASS,fan_control_v1
+10,104,HIGH,HIGH,PASS,fan_control_v1
+20,100,LOW,LOW,PASS,fan_control_v1
+30,92,LOW,LOW,PASS,fan_control_v1
+40,90,OFF,OFF,PASS,fan_control_v1

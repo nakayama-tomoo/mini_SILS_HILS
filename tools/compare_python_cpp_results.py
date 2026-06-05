@@ -104,6 +104,9 @@ def main():
     print()
     print(" output:", OUTPUT_PATH)
 
+    if not overall_match:
+        raise SystemExit(1)
+
 
 if __name__ == "__main__":
     main()

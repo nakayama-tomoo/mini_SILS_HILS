@@ -1,41 +1,29 @@
 {
   "schema_version": "0.1.0",
-
   "evidence": [
-
     {
-      "scenario_id": "SC-01",
-
+      "scenario_id": "SC_01",
       "requirement_ids": [
         "REQ-FAN-001"
       ],
-
-      "result_file":
-        "results/comparison_summary.json",
-
+      "result_file": "results/comparison_summary.json",
       "implementations": [
         "python_sils",
         "cpp_sils",
         "arduino_hils"
       ]
     },
-
     {
-      "scenario_id": "SC-02",
-
+      "scenario_id": "SC_02",
       "requirement_ids": [
         "REQ-FAN-001"
       ],
-
-      "result_file":
-        "results/comparison_summary.json",
-
+      "result_file": "results/comparison_summary.json",
       "implementations": [
         "python_sils",
         "cpp_sils",
         "arduino_hils"
       ]
     }
-
   ]
 }

@@ -24,6 +24,12 @@
       "python_result": "FOUND",
       "cpp_result": "FOUND",
       "comparison": "MATCH"
+    },
+    {
+      "scenario": "sc_05_v2_threshold_validation",
+      "python_result": "FOUND",
+      "cpp_result": "FOUND",
+      "comparison": "MATCH"
     }
   ]
 }

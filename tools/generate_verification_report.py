@@ -1,73 +1,136 @@
-from pathlib import Path
+from __future__ import annotations
+
 import json
+from pathlib import Path
+from typing import Any
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-INPUT_PATH = (
+ALL_RESULTS_PATH = (
     BASE_DIR
     / "results"
     / "all_results_summary.json"
 )
 
-OUTPUT_PATH = (
+REPORT_PATH = (
     BASE_DIR
     / "results"
     / "verification_report.md"
 )
 
+REPORTS_DIR_PATH = (
+    BASE_DIR
+    / "results"
+    / "reports"
+    / "verification_report.md"
+)
 
-def main():
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
-        summary = json.load(f)
 
-    lines = []
+def load_all_results() -> dict[str, Any]:
+    with ALL_RESULTS_PATH.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def get_scenario_records(
+    summary: dict[str, Any],
+) -> list[dict[str, Any]]:
+    if "scenarios" in summary:
+        return summary["scenarios"]
+
+    records = []
+
+    for comparison in summary.get("comparisons", []):
+        records.append(
+            {
+                "id": "N/A",
+                "scenario": comparison.get("scenario", ""),
+                "version_id": comparison.get("version_id", "unspecified"),
+                "python_sils": "N/A",
+                "cpp_sils": "N/A",
+                "python_cpp": comparison.get("python_cpp", "UNKNOWN"),
+                "mini_hils": comparison.get("hils", "UNKNOWN"),
+                "overall": comparison.get("overall", "UNKNOWN"),
+            }
+        )
+
+    return records
+
+
+def main() -> None:
+    summary = load_all_results()
+    scenario_records = get_scenario_records(summary)
+
+    overall = summary.get("overall", "UNKNOWN")
+
+    lines: list[str] = []
 
     lines.append("# Verification Report")
     lines.append("")
-
     lines.append("## Overall Result")
     lines.append("")
-
-    lines.append(summary["overall"])
+    lines.append(str(overall))
     lines.append("")
 
     lines.append("## Scenario Results")
     lines.append("")
+    lines.append(
+        "| ID | Scenario | Version | Python SILS | C++ SILS | Python/C++ | mini HILS | Overall |"
+    )
+    lines.append(
+        "|---|---|---|---|---|---|---|---|"
+    )
 
-    lines.append("| Scenario | Python/C++ | HILS | Overall |")
-    lines.append("|---|---|---|---|")
-
-    for item in summary["comparisons"]:
+    for record in scenario_records:
         lines.append(
-            f"| {item['scenario']} "
-            f"| {item['python_cpp']} "
-            f"| {item['hils']} "
-            f"| {item['overall']} |"
+            "| "
+            f"{record.get('id', 'N/A')} | "
+            f"{record.get('scenario', '')} | "
+            f"{record.get('version_id', 'unspecified')} | "
+            f"{record.get('python_sils', 'UNKNOWN')} | "
+            f"{record.get('cpp_sils', 'UNKNOWN')} | "
+            f"{record.get('python_cpp', 'UNKNOWN')} | "
+            f"{record.get('mini_hils', 'UNKNOWN')} | "
+            f"{record.get('overall', 'UNKNOWN')} |"
         )
 
     lines.append("")
-    lines.append("## Generated Artifacts")
+    lines.append("## Notes")
+    lines.append("")
+    lines.append(
+        "- `SKIPPED` means the scenario did not target that execution environment."
+    )
+    lines.append(
+        "- SC_05 is a fan_control_v2 validation scenario executed by Python SILS and C++ SILS."
+    )
+    lines.append(
+        "- C++ SILS fan_control_v2 support is implemented via version-aware C++ scenario execution."
+    )
     lines.append("")
 
+    lines.append("## Generated Artifacts")
+    lines.append("")
     lines.append("- suite_summary.json")
     lines.append("- comparison_summary.json")
     lines.append("- all_results_summary.json")
     lines.append("- verification_report.md")
+    lines.append("- reports/verification_report.md")
+    lines.append("")
 
-    report = "\n".join(lines)
+    report_text = "\n".join(lines)
 
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
-        f.write(report)
+    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    REPORTS_DIR_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+    REPORT_PATH.write_text(report_text, encoding="utf-8")
+    REPORTS_DIR_PATH.write_text(report_text, encoding="utf-8")
 
     print("=" * 60)
     print("Verification Report")
     print("=" * 60)
-
-    print(report)
-
-    print()
-    print(" output:", OUTPUT_PATH)
+    print(report_text)
+    print(f" output: {REPORT_PATH}")
+    print(f" output: {REPORTS_DIR_PATH}")
 
 
 if __name__ == "__main__":

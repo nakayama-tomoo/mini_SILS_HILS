@@ -1,0 +1,35 @@
+expected_id: fan_control_expected_v1_v2
+
+description: >
+  Expected behavior definition for the fan control Mini-SILS-HILS PoC.
+
+scenarios:
+  SC_01:
+    scenario_name: sc_01_traffic_warmup_cooldown
+    expected_behavior:
+      - Fan turns on when coolant temperature exceeds the ON threshold.
+      - Fan turns off after coolant temperature falls below the OFF threshold.
+
+  SC_02:
+    scenario_name: sc_02_around_95deg_fluctuation
+    expected_behavior:
+      - Fan command remains stable around the boundary condition.
+      - Excessive chatter is not observed.
+
+  SC_03:
+    scenario_name: sc_03_rapid_heatup_recovery
+    expected_behavior:
+      - Fan turns on during rapid heatup.
+      - Fan turns off after the recovery condition is satisfied.
+
+  SC_04:
+    scenario_name: sc_04_high_temp_oscillation
+    expected_behavior:
+      - Fan control remains bounded during high temperature oscillation.
+      - No unexpected command inversion is observed.
+
+  SC_05:
+    scenario_name: sc_05_v2_threshold_validation
+    expected_behavior:
+      - Fan control follows fan_control_v2 threshold values.
+      - Fan transitions OFF, LOW, HIGH, LOW, OFF according to v2 hysteresis.

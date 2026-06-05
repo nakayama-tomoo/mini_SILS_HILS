@@ -1,0 +1,33 @@
+{
+  "environment_id": "mini_hils",
+  "display_name": "Mini HILS on Arduino UNO",
+
+  "type": "HILS",
+
+  "implementation": "arduino_hils",
+
+  "execution_model": {
+    "logical_time": false,
+    "realtime": true
+  },
+
+  "canonical_interfaces": {
+    "scenario_input": "CSV",
+    "result_output": "JSON"
+  },
+
+  "physical_interfaces": {
+    "input": "UART",
+    "output": "UART"
+  },
+
+  "adapters": {
+    "input_adapter": "csv_to_uart",
+    "output_adapter": "uart_to_normalized_json"
+  },
+
+  "platform": {
+    "host": "Raspberry Pi 5",
+    "dut": "Arduino UNO"
+  }
+}
