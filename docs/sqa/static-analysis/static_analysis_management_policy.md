@@ -116,3 +116,21 @@ Any remediation decision should be traceable through:
 - Pull Request
 - CI result
 - Documentation
+
+## Review Process
+
+Static analysis findings should be reviewed during:
+
+- Pull Request review
+- Periodic quality review
+- Release readiness review
+
+## Baseline Concept
+
+Existing findings may be accepted as a baseline.
+
+New findings should be evaluated separately from baseline findings.
+
+The objective is to prevent quality regression while allowing gradual improvement.
+
+
