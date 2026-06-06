@@ -1,0 +1,77 @@
+implementations/cpp_sils/build/CMakeFiles/4.3.2/CompilerIdCXX/CMakeCXXCompilerId.cpp:0:0: information: Too many #ifdef configurations - cppcheck only checks 12 of 167 configurations. Use --force to check all configurations. [toomanyconfigs]
+
+^
+implementations/cpp_sils/build/CMakeFiles/4.3.2/CompilerIdCXX/apple-sdk.cpp:1:2: information: Include file: <AvailabilityMacros.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <AvailabilityMacros.h>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:1:2: information: Include file: "fan_control.hpp" not found. [missingInclude]
+#include "fan_control.hpp"
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:3:2: information: Include file: <cctype> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <cctype>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:4:2: information: Include file: <filesystem> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <filesystem>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:5:2: information: Include file: <fstream> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <fstream>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:6:2: information: Include file: <iostream> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <iostream>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:7:2: information: Include file: <stdexcept> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdexcept>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:8:2: information: Include file: <string> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:9:2: information: Include file: <vector> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <vector>
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
+
+^
+implementations/cpp_sils/scenarios/run_scenario.cpp:119:16: style: Consider using std::transform algorithm instead of a raw loop. [useStlAlgorithm]
+        result.push_back(
+               ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:163:62: style: Consider using std::any_of algorithm instead of a raw loop. [useStlAlgorithm]
+            if (normalizedHeader == normalizeKey(candidate)) {
+                                                             ^
+implementations/cpp_sils/src/fan_control.cpp:1:2: information: Include file: "fan_control.hpp" not found. [missingInclude]
+#include "fan_control.hpp"
+ ^
+implementations/cpp_sils/src/fan_control.cpp:3:2: information: Include file: <algorithm> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <algorithm>
+ ^
+implementations/cpp_sils/src/fan_control.cpp:4:2: information: Include file: <cctype> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <cctype>
+ ^
+implementations/cpp_sils/src/fan_control.cpp:5:2: information: Include file: <stdexcept> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdexcept>
+ ^
+implementations/cpp_sils/src/fan_control.cpp:6:2: information: Include file: <string> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <string>
+ ^
+implementations/cpp_sils/src/main.cpp:1:2: information: Include file: <iostream> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <iostream>
+ ^
+implementations/cpp_sils/src/main.cpp:3:2: information: Include file: "fan_control.hpp" not found. [missingInclude]
+#include "fan_control.hpp"
+ ^
+implementations/cpp_sils/tests/test_fan_control.cpp:1:2: information: Include file: <gtest/gtest.h> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <gtest/gtest.h>
+ ^
+implementations/cpp_sils/tests/test_fan_control.cpp:3:2: information: Include file: <stdexcept> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <stdexcept>
+ ^
+implementations/cpp_sils/tests/test_fan_control.cpp:4:2: information: Include file: <vector> not found. Please note: Standard library headers do not need to be provided to get proper results. [missingIncludeSystem]
+#include <vector>
+ ^
+implementations/cpp_sils/tests/test_fan_control.cpp:6:2: information: Include file: "fan_control.hpp" not found. [missingInclude]
+#include "fan_control.hpp"
+ ^
+implementations/cpp_sils/scenarios/run_scenario.cpp:113:13: style: The function 'upper' is never used. [unusedFunction]
+std::string upper(const std::string& value)
+            ^
+nofile:0:0: information: Active checkers: 173/186 (use --checkers-report=<filename> to see details) [checkersReport]
+

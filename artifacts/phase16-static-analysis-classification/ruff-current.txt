@@ -1,0 +1,46 @@
+F541 [*] f-string without any placeholders
+  --> common/comparison/compare_results.py:21:15
+   |
+19 |     if len(python_rows) != len(cpp_rows):
+20 |         print("")
+21 |         print(f"Row count mismatch:")
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+22 |         print(f"  Python: {python_csv}")
+23 |         print(f"  C++   : {cpp_csv}")
+   |
+help: Remove extraneous `f` prefix
+
+E402 Module level import not at top of file
+ --> implementations/python_sils/scripts/run_fan_control_sils.py:8:1
+  |
+6 | sys.path.insert(0, str(REPO_ROOT / "src"))
+7 |
+8 | from mini_sils.result_writer import write_csv, write_json
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+9 | from mini_sils.scenario_runner import run_fan_control_scenario
+  |
+
+E402 Module level import not at top of file
+  --> implementations/python_sils/scripts/run_fan_control_sils.py:9:1
+   |
+ 8 | from mini_sils.result_writer import write_csv, write_json
+ 9 | from mini_sils.scenario_runner import run_fan_control_scenario
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 |
+11 | def main() -> None:
+   |
+
+F541 [*] f-string without any placeholders
+  --> implementations/python_sils/tools/compare_results.py:21:15
+   |
+19 |     if len(python_rows) != len(cpp_rows):
+20 |         print("")
+21 |         print(f"Row count mismatch:")
+   |               ^^^^^^^^^^^^^^^^^^^^^^
+22 |         print(f"  Python: {python_csv}")
+23 |         print(f"  C++   : {cpp_csv}")
+   |
+help: Remove extraneous `f` prefix
+
+Found 4 errors.
+[*] 2 fixable with the `--fix` option.

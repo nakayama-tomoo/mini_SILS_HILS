@@ -1,0 +1,31 @@
+# Phase 16 Static Analysis Classification
+
+## Ruff
+
+### E402
+
+File:
+- implementations/python_sils/scripts/run_fan_control_sils.py
+
+Count:
+- 2
+
+Classification:
+- Review Required
+
+Reason:
+The imports are intentionally placed after sys.path manipulation.
+Changing import order may affect execution behavior.
+Further design review is required before remediation.
+
+## Cppcheck
+
+Status:
+- Not evaluated
+
+Reason:
+Cppcheck is not installed in the local environment.
+
+Next Action:
+- Verify Cppcheck installation method
+- Reproduce Phase14 baseline findings
