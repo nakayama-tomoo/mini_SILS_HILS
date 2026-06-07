@@ -1,0 +1,21 @@
+Phase 20 SILS-HILS Comparison Summary
+
+Compared Targets:
+
+* Python SILS
+* C++ SILS
+* Arduino HILS
+
+Scenarios:
+
+* SC_01 : PASS
+* SC_02 : PASS
+* SC_03 : PASS
+* SC_04 : PASS
+
+Equivalent Scenarios:
+4 / 4
+
+Overall Result:
+PASS
+
