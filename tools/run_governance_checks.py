@@ -12,6 +12,7 @@ COMMANDS = [
     ["python", "tools/generate_version_matrix.py"],
     ["python", "tools/run_v2_validation.py"],
     ["python", "tools/validate_traceability_consistency.py"],
+    ["python", "tools/check_comparison_evidence.py"],
 ]
 
 
