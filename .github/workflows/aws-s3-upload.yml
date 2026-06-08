@@ -1,10 +1,10 @@
-name: AWS S3 Upload Test
+name: AWS S3 Evidence Upload
 
 on:
   workflow_dispatch:
 
 jobs:
-  upload-test:
+  upload-evidence:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,12 +18,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-1
 
-      - name: Create test file
-        run: |
-          echo "GitHub Actions -> AWS -> S3 test" > sample.txt
-
-      - name: Upload to S3
+      - name: Upload verification report
         run: |
           aws s3 cp \
-            sample.txt \
-            s3://mini-sils-hils-evidence-tomoo/phase26/sample.txt
+            results/verification_report.md \
+            s3://mini-sils-hils-evidence-tomoo/phase27/verification_report.md
+
+      - name: Upload evidence manifest
+        run: |
+          aws s3 cp \
+            evidence/evidence_manifest.json \
+            s3://mini-sils-hils-evidence-tomoo/phase27/evidence_manifest.json
+
+      - name: Upload comparison summary
+        run: |
+          aws s3 cp \
+            results/comparison_summary.json \
+            s3://mini-sils-hils-evidence-tomoo/phase27/comparison_summary.json
+
+      - name: Upload coverage matrix
+        run: |
+          aws s3 cp \
+            traceability/coverage_matrix.json \
+            s3://mini-sils-hils-evidence-tomoo/phase27/coverage_matrix.json
+
