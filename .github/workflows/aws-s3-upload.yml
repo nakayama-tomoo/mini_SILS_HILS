@@ -11,6 +11,37 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.9"
+
+      - name: Install Python dependencies
+        run: |
+          cd implementations/python_sils
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run SILS suite
+        run: |
+          python tools/run_suite.py
+
+      - name: Compare results
+        run: |
+          python tools/compare_python_cpp_results.py
+
+      - name: Generate evidence manifest
+        run: |
+          python tools/generate_evidence_manifest.py
+
+      - name: Generate coverage matrix
+        run: |
+          python tools/generate_coverage_matrix.py
+
+      - name: Generate verification report
+        run: |
+          python tools/generate_verification_report.py
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
