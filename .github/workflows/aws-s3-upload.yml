@@ -24,12 +24,27 @@ jobs:
           echo "head_sha: ${{ github.event.workflow_run.head_sha }}"
           echo "conclusion: ${{ github.event.workflow_run.conclusion }}"
 
-      - name: Download CPP SILS artifact
-        uses: actions/download-artifact@v5
-        with:
-          run-id: ${{ github.event.workflow_run.id }}
-          name: phase12-cpp-sils-evidence
-          path: downloaded-artifacts/cpp
+      - name: Show artifact list from source workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "SOURCE RUN ID=${{ github.event.workflow_run.id }}"
+
+          curl -s \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/artifacts \
+            > artifacts.json
+
+          echo "===== artifact list ====="
+          cat artifacts.json
+
+#      - name: Download CPP SILS artifact
+#        uses: actions/download-artifact@v5
+#        with:
+#          run-id: ${{ github.event.workflow_run.id }}
+#          name: phase12-cpp-sils-evidence
+#          path: downloaded-artifacts/cpp
 
       - name: Show downloaded files
         if: always()
