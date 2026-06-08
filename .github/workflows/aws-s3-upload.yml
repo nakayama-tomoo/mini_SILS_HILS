@@ -24,6 +24,19 @@ jobs:
           echo "head_sha: ${{ github.event.workflow_run.head_sha }}"
           echo "conclusion: ${{ github.event.workflow_run.conclusion }}"
 
+      - name: Download CPP SILS artifact
+        uses: actions/download-artifact@v5
+        with:
+          run-id: ${{ github.event.workflow_run.id }}
+          name: phase12-cpp-sils-evidence
+          path: downloaded-artifacts/cpp
+
+      - name: Show downloaded files
+        if: always()
+        run: |
+          pwd
+          find downloaded-artifacts || true
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
