@@ -91,6 +91,10 @@ jobs:
         run: |
           python tools/compare_python_cpp_results.py
 
+      - name: Generate verification report
+        run: |
+          python tools/generate_verification_report.py
+
       - name: Collect Phase 12 C++ evidence files
         if: always()
         run: |
@@ -225,5 +229,7 @@ jobs:
           path: |
             reports/ci/**
             reports/evidence/cpp/**
+            results/verification_report.md
+            results/reports/verification_report.md
           if-no-files-found: error
           retention-days: 14
