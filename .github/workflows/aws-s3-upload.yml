@@ -1,15 +1,28 @@
 name: AWS S3 Evidence Upload
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - C++ SILS CI
+    types:
+      - completed
 
 jobs:
   upload-evidence:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Show workflow_run information
+        run: |
+          echo "workflow: ${{ github.event.workflow_run.name }}"
+          echo "run_id: ${{ github.event.workflow_run.id }}"
+          echo "head_branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "head_sha: ${{ github.event.workflow_run.head_sha }}"
+          echo "conclusion: ${{ github.event.workflow_run.conclusion }}"
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
