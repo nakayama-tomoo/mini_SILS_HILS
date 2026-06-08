@@ -11,6 +11,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download Python evidence artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: phase12-python-test-evidence-*
+          merge-multiple: true
+          path: downloaded-artifacts/python
+
+      - name: Download C++ evidence artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: phase12-cpp-sils-evidence-*
+          merge-multiple: true
+          path: downloaded-artifacts/cpp
+
+      - name: Show downloaded files
+        run: |
+          find downloaded-artifacts -type f | sort
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
