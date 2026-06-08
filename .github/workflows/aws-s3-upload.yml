@@ -43,15 +43,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          ARTIFACT_ID=$(python3 - <<'PY'
-import json
-
-with open("artifacts.json") as f:
-    data = json.load(f)
-
-print(data["artifacts"][0]["id"])
-PY
-          )
+          ARTIFACT_ID=$(python3 -c "import json; print(json.load(open('artifacts.json'))['artifacts'][0]['id'])")
 
           echo "ARTIFACT_ID=${ARTIFACT_ID}"
 
@@ -62,6 +54,7 @@ PY
             -o artifact.zip
 
           ls -lh artifact.zip
+
 
       - name: Extract artifact
         run: |
