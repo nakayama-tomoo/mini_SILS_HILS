@@ -89,22 +89,41 @@ jobs:
         run: |
           aws s3 cp \
             extracted-artifact/results/verification_report.md \
-            s3://mini-sils-hils-evidence-tomoo/phase35/verification_report.md
+            s3://mini-sils-hils-evidence-tomoo/phase36/verification_report.md
 
-      - name: Upload evidence manifest
+      - name: Upload metadata
         run: |
           aws s3 cp \
-            evidence/evidence_manifest.json \
-            s3://mini-sils-hils-evidence-tomoo/phase27/evidence_manifest.json
+            extracted-artifact/reports/ci/metadata.json \
+            s3://mini-sils-hils-evidence-tomoo/phase36/metadata.json
+
+      - name: Upload tool versions
+        run: |
+          aws s3 cp \
+            extracted-artifact/reports/ci/tool-versions.txt \
+            s3://mini-sils-hils-evidence-tomoo/phase36/tool-versions.txt
 
       - name: Upload comparison summary
         run: |
           aws s3 cp \
-            results/comparison_summary.json \
-            s3://mini-sils-hils-evidence-tomoo/phase27/comparison_summary.json
+            extracted-artifact/reports/evidence/cpp/results/comparison_summary.json \
+            s3://mini-sils-hils-evidence-tomoo/phase36/comparison_summary.json
 
-      - name: Upload coverage matrix
-        run: |
-          aws s3 cp \
-            traceability/coverage_matrix.json \
-            s3://mini-sils-hils-evidence-tomoo/phase27/coverage_matrix.json
+
+#      - name: Upload evidence manifest
+#        run: |
+#          aws s3 cp \
+#            evidence/evidence_manifest.json \
+#            s3://mini-sils-hils-evidence-tomoo/phase27/evidence_manifest.json
+
+#      - name: Upload comparison summary
+#        run: |
+#          aws s3 cp \
+#            results/comparison_summary.json \
+#            s3://mini-sils-hils-evidence-tomoo/phase27/comparison_summary.json
+
+#      - name: Upload coverage matrix
+#        run: |
+#          aws s3 cp \
+#            traceability/coverage_matrix.json \
+#            s3://mini-sils-hils-evidence-tomoo/phase27/coverage_matrix.json
