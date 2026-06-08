@@ -3,7 +3,7 @@ name: AWS S3 Evidence Upload
 on:
   workflow_run:
     workflows:
-      - C++ SILS CI
+      - CPP SILS CI
     types:
       - completed
 
